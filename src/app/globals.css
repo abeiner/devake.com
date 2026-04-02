@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+/* ============================================
+   DEVAKE. Design System — Tailwind v4 Tokens
+   ============================================ */
+
+@theme {
+  /* Colors */
+  --color-bg-primary: #0A0A0C;
+  --color-bg-secondary: #111113;
+  --color-bg-light: #FFFDD8;
+  --color-text-primary: #FFFDD8;
+  --color-text-dark: #0A0A0C;
+  --color-accent: #FF3831;
+  --color-accent-hover: #FF5A54;
+  --color-border: rgba(255, 253, 216, 0.1);
+  --color-border-hover: rgba(255, 253, 216, 0.3);
+
+  /* 8px grid spacing */
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 40px;
+  --spacing-xl: 64px;
+  --spacing-2xl: 100px;
+  --spacing-3xl: 160px;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+html {
+  font-family: var(--font-display), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #0A0A0C;
+  color: #FFFDD8;
+  font-family: var(--font-display), sans-serif;
+  min-height: 100vh;
+}
+
+/* ============================================
+   Font Utility Classes
+   Display font (Space Grotesk) is the default on html/body.
+   Mono font (IBM Plex Mono) applied via utility class.
+   ============================================ */
+
+.font-mono-text {
+  font-family: var(--font-mono), monospace;
+}
+
+/* ============================================
+   Noise Texture Overlay for Dark Sections
+   Applied via .noise-overlay class
+   ============================================ */
+
+.noise-overlay {
+  position: relative;
+}
+
+.noise-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/noise.png");
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ============================================
+   Selection Styles
+   ============================================ */
+
+::selection {
+  background-color: #FF3831;
+  color: #0A0A0C;
+}
+
+/* ============================================
+   Scrollbar (minimal, dark)
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0A0A0C;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 253, 216, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 253, 216, 0.3);
+}
+
+/* ============================================
+   Tech Ticker — horizontal scrolling animation
+   ============================================ */
+
+.ticker-track {
+  animation: ticker-scroll 30s linear infinite;
+}
+
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+
+  /* Disable all CSS transitions and animations under reduced motion */
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================
+   Skip-to-Content Link
+   Visually hidden but visible on keyboard focus
+   ============================================ */
+
+.skip-to-content {
+  position: fixed;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 12px 24px;
+  background-color: #FF3831;
+  color: #0A0A0C;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.skip-to-content:focus {
+  top: 8px;
+  opacity: 1;
+  outline: 2px solid #FF3831;
+  outline-offset: 2px;
+}
+
+/* ============================================
+   Focus-Visible Utility — consistent focus ring
+   ============================================ */
+
+.focus-ring:focus-visible {
+  outline: 2px solid #FF3831;
+  outline-offset: 2px;
+}
+
+/* Global focus-visible defaults for interactive elements */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #FF3831;
+  outline-offset: 2px;
+}
+
+/* For inputs that use underline styling, keep underline + no default outline */
+input.contact-input:focus-visible,
+textarea.contact-input:focus-visible {
+  outline: none;
+  border-bottom-color: #FF3831;
+}
