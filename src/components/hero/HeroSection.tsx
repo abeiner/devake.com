@@ -1,12 +1,32 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import PointCloud from "./PointCloud";
+import CodeBurst from "./CodeBurst";
 import CTAButton from "@/components/shared/CTAButton";
-import useSplitText from "@/hooks/useSplitText";
-import { SITE_CONFIG } from "@/lib/constants";
 import { usePreloader } from "@/components/preloader/PreloaderContext";
+
+/**
+ * Inline SVG paths for "DEVAKE." logo — 7 paths (D-E-V-A-K-E-dot).
+ * Extracted from devake-logo-text.svg, viewBox="0 0 841.89 595.28".
+ */
+const LOGO_PATHS = [
+  // D
+  "M306.72,300.83c0,13.49-11.05,23.47-22.25,23.47h-30.09v-46.09h30.7c10.82,0,21.64,9.52,21.64,22.63ZM291.02,300.76c0-5.49-4.5-10.21-10.21-10.21h-10.82v21.41h11.12c5.1,0,9.9-5.03,9.9-11.2Z",
+  // E
+  "M328.43,290.55v4.5h28.19v12.34h-28.19v4.57h28.19v12.34h-43.81v-46.09h43.81v12.34h-28.19Z",
+  // V
+  "M359.66,278.21h17.68l9.45,33.75h.76l9.45-33.75h17.67l-15.39,46.09h-24.23l-15.39-46.09Z",
+  // A
+  "M443.61,318.97h-16.61l-1.52,5.33h-17.52l15.39-46.09h23.92l15.39,46.09h-17.52l-1.52-5.33ZM440.18,306.62l-4.5-16.08h-.76l-4.49,16.08h9.75Z",
+  // K
+  "M484.06,308.38l-2.59,2.89v13.03h-15.62v-46.09h15.62v14.32h.53l12.72-14.32h16.76l-17.37,19.12,18.51,26.97h-17.14l-10.82-15.92h-.61Z",
+  // E
+  "M532.36,290.55v4.5h28.19v12.34h-28.19v4.57h28.19v12.34h-43.81v-46.09h43.81v12.34h-28.19Z",
+  // .
+  "M568.16,310.21h17.83v14.09h-17.83v-14.09Z",
+];
 
 /**
  * HeroSection — full-viewport hero with animated text reveal,
@@ -16,16 +36,37 @@ import { usePreloader } from "@/components/preloader/PreloaderContext";
  * Text animations fire after preloader completes (or immediately if skipped).
  */
 export default function HeroSection() {
-  const logoRef = useRef<HTMLHeadingElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
+  const logoPathsRef = useRef<(SVGPathElement | null)[]>([]);
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
   const animationRanRef = useRef(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const burstIdRef = useRef(0);
+
+  const [burstClick, setBurstClick] = useState<{ x: number; y: number; id: number } | null>(null);
 
   const { isComplete: preloaderComplete } = usePreloader();
 
-  // Split the logo text into individual characters for staggered reveal
-  const logoChars = useSplitText(logoRef, "chars");
+  /** Handle clicks on hero empty space — spawn code burst */
+  const handleHeroClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    // Don't trigger on interactive elements (buttons, links, inputs)
+    const target = e.target as HTMLElement;
+    if (target.closest("a, button, input, textarea, select, [role='button']")) {
+      return;
+    }
+
+    // Get click position relative to the section
+    const rect = sectionRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    burstIdRef.current += 1;
+    setBurstClick({ x, y, id: burstIdRef.current });
+  }, []);
 
   useEffect(() => {
     // Wait for preloader to complete before running hero animations
@@ -42,6 +83,9 @@ export default function HeroSection() {
     if (prefersReduced) {
       // Show everything immediately, no animations
       if (logoRef.current) gsap.set(logoRef.current, { opacity: 1 });
+      logoPathsRef.current.forEach((p) => {
+        if (p) gsap.set(p, { opacity: 1 });
+      });
       if (taglineRef.current) gsap.set(taglineRef.current, { opacity: 1 });
       if (ctaRef.current) gsap.set(ctaRef.current, { opacity: 1 });
       if (scrollIndicatorRef.current)
@@ -52,13 +96,12 @@ export default function HeroSection() {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 0.2 });
 
-      // 1) Logo: character-by-character reveal
-      const chars = logoChars.current;
-      if (chars.length > 0) {
-        // Set each character to hidden, then reveal the parent container
-        gsap.set(chars, { y: 40, opacity: 0 });
+      // 1) Logo: path-by-path reveal (one per letter: D-E-V-A-K-E-dot)
+      const paths = logoPathsRef.current.filter(Boolean) as SVGPathElement[];
+      if (paths.length > 0) {
+        gsap.set(paths, { y: 40, opacity: 0 });
         gsap.set(logoRef.current, { opacity: 1 });
-        tl.to(chars, {
+        tl.to(paths, {
           y: 0,
           opacity: 1,
           duration: 0.6,
@@ -67,7 +110,7 @@ export default function HeroSection() {
         });
       }
 
-      // 2) Tagline: fade-in with y shift, 0.5s after logo starts
+      // 2) Tagline: fade-in with y shift
       if (taglineRef.current) {
         gsap.set(taglineRef.current, { y: 20, opacity: 0 });
         tl.to(
@@ -82,7 +125,7 @@ export default function HeroSection() {
         );
       }
 
-      // 3) CTA: fade-in, 0.8s after tagline
+      // 3) CTA: fade-in
       if (ctaRef.current) {
         gsap.set(ctaRef.current, { y: 10, opacity: 0 });
         tl.to(
@@ -130,32 +173,53 @@ export default function HeroSection() {
     });
 
     return () => ctx.revert();
-  }, [preloaderComplete, logoChars]);
+  }, [preloaderComplete]);
 
   return (
     <section
+      ref={sectionRef}
       id="hero"
       className="relative min-h-screen overflow-hidden noise-overlay"
       style={{ backgroundColor: "#0A0A0C" }}
       aria-label="Hero"
+      onClick={handleHeroClick}
     >
       {/* Point cloud background (z-0) */}
       <PointCloud />
 
+      {/* Code burst effect layer (z-5, between point cloud and content) */}
+      <CodeBurst clickEvent={burstClick} />
+
       {/* Content overlay — lower-left quadrant positioning */}
       <div className="relative z-10 min-h-screen flex flex-col justify-end pb-24 sm:pb-32 md:pb-40">
         <div className="max-w-6xl mx-auto px-4 xl:px-0 w-full">
-          {/* Logo text */}
-          <h1
+          {/* Logo SVG — inline paths for DEVAKE. */}
+          <div
             ref={logoRef}
-            className="text-[56px] sm:text-[72px] md:text-[120px] lg:text-[160px] font-medium leading-none text-text-primary pointer-events-auto"
-            style={{
-              letterSpacing: "-3px",
-              opacity: 0,
-            }}
+            className="pointer-events-auto"
+            style={{ opacity: 0 }}
+            role="img"
+            aria-label="DEVAKE."
           >
-            {SITE_CONFIG.name}
-          </h1>
+            <h1 className="sr-only">DEVAKE.</h1>
+            <svg
+              viewBox="240 268 360 68"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-full max-w-[560px] md:max-w-[720px] lg:max-w-[900px] h-auto"
+              aria-hidden="true"
+            >
+              {LOGO_PATHS.map((d, i) => (
+                <path
+                  key={i}
+                  ref={(el) => {
+                    logoPathsRef.current[i] = el;
+                  }}
+                  d={d}
+                  fill="#FFFDD8"
+                />
+              ))}
+            </svg>
+          </div>
 
           {/* Tagline */}
           <p

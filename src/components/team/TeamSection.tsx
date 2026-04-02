@@ -7,6 +7,7 @@ import SectionHeader from "@/components/shared/SectionHeader";
 import useScrollAnimation from "@/hooks/useScrollAnimation";
 import { fadeInUp } from "@/lib/animations";
 import { FOUNDER } from "@/lib/constants";
+import AsciiPortrait from "@/components/team/AsciiPortrait";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -141,35 +142,16 @@ export default function TeamSection() {
 
           {/* Founder card -- two columns desktop, stacked mobile */}
           <div className="mt-xl grid grid-cols-1 md:grid-cols-2 gap-lg md:gap-xl items-start">
-            {/* Photo placeholder: Devake geometric icon */}
+            {/* ASCII art portrait of Alex Devake */}
             <div
               ref={photoRef}
               className="flex items-center justify-center"
             >
-              <div
-                className="w-[200px] h-[200px] md:w-[240px] md:h-[240px] flex items-center justify-center rounded-sm"
-                style={{ border: "1px solid rgba(10, 10, 12, 0.15)" }}
-              >
-                <svg
-                  viewBox="0 0 841.89 595.28"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-[120px] h-[120px] md:w-[140px] md:h-[140px]"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M540.25,348.54h101.38v80.15h-101.38v-80.15Z"
-                    fill="#0A0A0C"
-                  />
-                  <path
-                    d="M280.41,246.95v101.38h-80.15v-101.38h80.15Z"
-                    fill="#0A0A0C"
-                  />
-                  <polygon
-                    points="404.53 428.69 502.01 428.69 396.73 296.59 495.51 166.58 400.2 166.58 301.75 298.68 404.53 428.69"
-                    fill="#0A0A0C"
-                  />
-                </svg>
-              </div>
+              <AsciiPortrait
+                src="/alex-devake.jpg"
+                width={340}
+                className="w-[280px] sm:w-[320px] md:w-[340px] lg:w-[360px]"
+              />
             </div>
 
             {/* Text content */}

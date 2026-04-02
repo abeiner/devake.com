@@ -102,10 +102,13 @@ export default function Navbar() {
       style={{
         top: "var(--banner-height, 0px)",
         backgroundColor: isScrolled
-          ? "rgba(10, 10, 12, 0.9)"
+          ? "rgba(10, 10, 12, 0.7)"
           : "transparent",
-        backdropFilter: isScrolled ? "blur(8px)" : "none",
-        WebkitBackdropFilter: isScrolled ? "blur(8px)" : "none",
+        backdropFilter: isScrolled ? "blur(16px)" : "none",
+        WebkitBackdropFilter: isScrolled ? "blur(16px)" : "none",
+        borderBottom: isScrolled
+          ? "1px solid rgba(255, 253, 216, 0.05)"
+          : "1px solid transparent",
       }}
     >
       <nav
@@ -122,7 +125,7 @@ export default function Navbar() {
           aria-label="Scroll to top"
           className="flex items-center text-text-primary transition-colors duration-200 hover:text-accent"
         >
-          <DevakeIcon className="w-[32px] h-[32px] md:w-[32px] md:h-[32px]" />
+          <DevakeIcon className="w-[36px] h-[36px] md:w-[40px] md:h-[40px]" />
         </a>
 
         {/* Center: MENU + hamburger */}

@@ -299,20 +299,24 @@ export default function NavOverlay() {
         backgroundColor: "#0A0A0C",
       }}
     >
-      {/* Close button — top-right, offset to clear demo banner (36px) + center in navbar height (64px) */}
+      {/* Close button — centered to match MENU button position in navbar */}
       <div
-        className="flex justify-end px-4 xl:px-0 max-w-6xl mx-auto w-full"
-        style={{ paddingTop: "calc(var(--banner-height, 0px) + 18px)" }}
+        className="flex items-center justify-between px-4 xl:px-0 max-w-6xl mx-auto w-full h-[64px]"
+        style={{ marginTop: "var(--banner-height, 0px)" }}
       >
+        {/* Invisible spacer matching logo width */}
+        <div className="w-[36px] md:w-[40px]" aria-hidden="true" />
+
+        {/* Centered CLOSE button */}
         <button
           ref={closeButtonRef}
           type="button"
           onClick={closeNav}
-          className="flex items-center gap-2 text-text-primary transition-colors duration-200 hover:text-accent cursor-pointer"
+          className="flex items-center gap-3 text-text-primary transition-colors duration-200 hover:text-accent cursor-pointer"
           aria-label="Close navigation menu"
           style={{ opacity: 0 }}
         >
-          <span className="font-mono-text text-[13px] font-medium uppercase tracking-[2px]">
+          <span className="hidden md:inline font-mono-text text-[13px] font-medium uppercase tracking-[2px]">
             CLOSE
           </span>
           <svg
@@ -341,6 +345,9 @@ export default function NavOverlay() {
             />
           </svg>
         </button>
+
+        {/* Invisible spacer matching CTA width */}
+        <div className="w-[80px] md:w-[120px]" aria-hidden="true" />
       </div>
 
       {/* Section links — main content area */}
