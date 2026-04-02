@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*
+
+# Analysis and design folders (not part of the built site)
+current/
+new/
+
+# macOS
+.DS_Store
+._*
+.AppleDouble
+.LSOverride
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# Vercel / Azure
+.vercel
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo

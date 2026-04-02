@@ -1,0 +1,48 @@
+{
+  "extractedAt": "2026-04-02T00:00:00Z",
+  "images": [
+    {
+      "id": "devake-logo",
+      "originalUrl": "https://devake.com/uploads/5/7/8/2/57827029/devakelogo.png",
+      "localPath": "devakelogo.png",
+      "status": "not-downloaded",
+      "note": "Company logo/wordmark PNG image referenced in header. Could not access/download directly.",
+      "altText": "DEVAKE logo",
+      "context": "header hero section"
+    },
+    {
+      "id": "devake-icon-svg",
+      "originalUrl": "svg-extracted-from-css",
+      "localPath": "devake-icon.svg",
+      "status": "downloaded",
+      "note": "Geometric icon mark (abstract K-shape with rectangle, vertical bar, chevron). Downloaded as SVG.",
+      "altText": "Devake geometric icon",
+      "context": "brand identity asset"
+    },
+    {
+      "id": "devake-logo-text-svg",
+      "originalUrl": "svg-extracted-from-css",
+      "localPath": "devake-logo-text.svg",
+      "status": "downloaded",
+      "note": "Text-based DEVAKE. wordmark with trailing period. Downloaded as SVG.",
+      "altText": "Devake text logo",
+      "context": "brand identity asset"
+    },
+    {
+      "id": "homepage-screenshot",
+      "originalUrl": "local-screenshot",
+      "localPath": "homepage-top.png",
+      "status": "downloaded",
+      "note": "Screenshot of homepage top section for reference.",
+      "altText": "Homepage top section",
+      "context": "page reference"
+    }
+  ],
+  "summary": {
+    "totalImages": 4,
+    "downloaded": 3,
+    "failed": 0,
+    "notDownloaded": 1,
+    "notes": "Devake.com is a minimal single-page Weebly site with very few image assets. The PNG logo (devakelogo.png) could not be downloaded directly but is referenced in the analysis. SVG assets were successfully extracted and saved. No other images, hero images, screenshots, team photos, or visual content exists on the site."
+  }
+}
