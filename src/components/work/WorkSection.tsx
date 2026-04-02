@@ -38,7 +38,7 @@ export default function WorkSection() {
     fadeInUp(headerRef.current!, tl);
   });
 
-  /* Visual: parallax scroll (inner moves at 70% speed via scrub) */
+  /* Visual: parallax scroll (inner moves at reduced speed via scrub) */
   useScrollAnimation(
     visualRef,
     (el, tl) => {
@@ -46,8 +46,8 @@ export default function WorkSection() {
       if (!inner) return;
       tl.fromTo(
         inner,
-        { yPercent: -15 },
-        { yPercent: 15, ease: "none" }
+        { yPercent: -7.5 },
+        { yPercent: 7.5, ease: "none" }
       );
     },
     { start: "top bottom", end: "bottom top", scrub: true }
@@ -127,79 +127,61 @@ export default function WorkSection() {
         <div
           ref={visualRef}
           className="relative mt-lg md:mt-xl overflow-hidden aspect-[4/3] md:aspect-video"
+          style={{ contain: "layout style paint" }}
         >
-          {/* Parallax inner container (taller than viewport to allow movement) */}
+          {/* Parallax inner container (115% to reduce paint area) */}
           <div
             ref={visualInnerRef}
-            className="absolute inset-[-15%] w-[130%] h-[130%]"
+            className="absolute inset-[-7.5%] w-[115%] h-[115%]"
+            style={{
+              willChange: "transform",
+              backfaceVisibility: "hidden",
+            }}
             aria-hidden="true"
           >
-            {/* Base gradient: deep blues/greens simulating satellite false color */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#0d2818] to-[#0a0a1a]" />
-
-            {/* Radial highlight: simulating LIDAR scan center */}
+            {/* Layer 1: Base gradient + radial highlights (merged) */}
             <div
               className="absolute inset-0"
               style={{
-                background:
-                  "radial-gradient(ellipse 60% 50% at 40% 45%, rgba(15, 90, 60, 0.4) 0%, rgba(10, 30, 50, 0.2) 50%, transparent 80%)",
-              }}
-            />
-
-            {/* Secondary radial: sensor return hotspot */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
+                background: [
                   "radial-gradient(circle at 65% 55%, rgba(20, 60, 100, 0.3) 0%, transparent 40%)",
+                  "radial-gradient(ellipse 60% 50% at 40% 45%, rgba(15, 90, 60, 0.4) 0%, rgba(10, 30, 50, 0.2) 50%, transparent 80%)",
+                  "linear-gradient(to bottom right, #0a1628, #0d2818, #0a0a1a)",
+                ].join(", "),
               }}
             />
 
-            {/* Coordinate grid lines (horizontal) */}
+            {/* Layer 2: Coordinate grid (H + V merged) */}
             <div
               className="absolute inset-0"
               style={{
-                backgroundImage:
+                backgroundImage: [
                   "repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(255,253,216,0.04) 59px, rgba(255,253,216,0.04) 60px)",
-              }}
-            />
-
-            {/* Coordinate grid lines (vertical) */}
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage:
                   "repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255,253,216,0.04) 59px, rgba(255,253,216,0.04) 60px)",
+                ].join(", "),
               }}
             />
 
-            {/* Diagonal scan lines (subtle LIDAR sweep) */}
-            <div
-              className="absolute inset-0 opacity-[0.03]"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(135deg, transparent, transparent 3px, rgba(255,253,216,0.5) 3px, rgba(255,253,216,0.5) 4px)",
-                backgroundSize: "8px 8px",
-              }}
-            />
-
-            {/* Scattered "data points" via radial dots */}
+            {/* Layer 3: Scan lines + data points (merged) */}
             <div
               className="absolute inset-0"
               style={{
-                backgroundImage:
-                  "radial-gradient(circle 1px at 20% 30%, rgba(255,56,49,0.6) 0%, transparent 100%), " +
-                  "radial-gradient(circle 1px at 45% 20%, rgba(255,253,216,0.3) 0%, transparent 100%), " +
-                  "radial-gradient(circle 1px at 70% 60%, rgba(255,56,49,0.4) 0%, transparent 100%), " +
-                  "radial-gradient(circle 1px at 30% 70%, rgba(255,253,216,0.25) 0%, transparent 100%), " +
-                  "radial-gradient(circle 1px at 80% 35%, rgba(255,253,216,0.2) 0%, transparent 100%), " +
-                  "radial-gradient(circle 1.5px at 55% 45%, rgba(255,56,49,0.5) 0%, transparent 100%), " +
-                  "radial-gradient(circle 1px at 15% 55%, rgba(255,253,216,0.2) 0%, transparent 100%), " +
-                  "radial-gradient(circle 1px at 85% 75%, rgba(255,56,49,0.35) 0%, transparent 100%), " +
-                  "radial-gradient(circle 1px at 60% 80%, rgba(255,253,216,0.15) 0%, transparent 100%), " +
-                  "radial-gradient(circle 2px at 35% 40%, rgba(15,120,80,0.4) 0%, transparent 100%), " +
-                  "radial-gradient(circle 1.5px at 50% 65%, rgba(15,120,80,0.3) 0%, transparent 100%), " +
+                backgroundImage: [
+                  "repeating-linear-gradient(135deg, transparent, transparent 3px, rgba(255,253,216,0.015) 3px, rgba(255,253,216,0.015) 4px)",
+                  "radial-gradient(circle 1px at 20% 30%, rgba(255,56,49,0.6) 0%, transparent 100%)",
+                  "radial-gradient(circle 1px at 45% 20%, rgba(255,253,216,0.3) 0%, transparent 100%)",
+                  "radial-gradient(circle 1px at 70% 60%, rgba(255,56,49,0.4) 0%, transparent 100%)",
+                  "radial-gradient(circle 1px at 30% 70%, rgba(255,253,216,0.25) 0%, transparent 100%)",
+                  "radial-gradient(circle 1px at 80% 35%, rgba(255,253,216,0.2) 0%, transparent 100%)",
+                  "radial-gradient(circle 1.5px at 55% 45%, rgba(255,56,49,0.5) 0%, transparent 100%)",
+                  "radial-gradient(circle 1px at 15% 55%, rgba(255,253,216,0.2) 0%, transparent 100%)",
+                  "radial-gradient(circle 1px at 85% 75%, rgba(255,56,49,0.35) 0%, transparent 100%)",
+                  "radial-gradient(circle 1px at 60% 80%, rgba(255,253,216,0.15) 0%, transparent 100%)",
+                  "radial-gradient(circle 2px at 35% 40%, rgba(15,120,80,0.4) 0%, transparent 100%)",
+                  "radial-gradient(circle 1.5px at 50% 65%, rgba(15,120,80,0.3) 0%, transparent 100%)",
                   "radial-gradient(circle 1px at 75% 25%, rgba(15,120,80,0.25) 0%, transparent 100%)",
+                ].join(", "),
+                backgroundSize: "8px 8px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%",
               }}
             />
 
