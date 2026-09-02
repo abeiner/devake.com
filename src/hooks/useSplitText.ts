@@ -23,6 +23,7 @@ export default function useSplitText(
 ) {
   const spansRef = useRef<HTMLSpanElement[]>([]);
   const originalHTMLRef = useRef<string>("");
+  const originalAriaLabelRef = useRef<string | null>(null);
 
   const split = useCallback(() => {
     const el = ref.current;
@@ -33,6 +34,19 @@ export default function useSplitText(
       el.innerHTML = originalHTMLRef.current;
     } else {
       originalHTMLRef.current = el.innerHTML;
+      originalAriaLabelRef.current = el.getAttribute("aria-label");
+    }
+
+    // Animated wrappers can remove whitespace between visual lines in the
+    // accessibility tree (for example, "USForestry"). The visual fragments
+    // stay hidden from assistive technology; a semantic text node is added
+    // after splitting instead of putting an invalid aria-label on a heading
+    // or paragraph.
+    const accessibleText = (el.textContent || "")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (originalAriaLabelRef.current === null) {
+      el.removeAttribute("aria-label");
     }
 
     const spans: HTMLSpanElement[] = [];
@@ -44,6 +58,7 @@ export default function useSplitText(
         const span = document.createElement("span");
         span.className = "split-char";
         span.style.display = "inline-block";
+        span.setAttribute("aria-hidden", "true");
         // Preserve spaces — a zero-width space collapses, but nbsp does not
         span.textContent = char === " " ? "\u00A0" : char;
         el.appendChild(span);
@@ -57,6 +72,7 @@ export default function useSplitText(
         const span = document.createElement("span");
         span.className = "split-word";
         span.style.display = "inline-block";
+        span.setAttribute("aria-hidden", "true");
         span.textContent = word;
         el.appendChild(span);
         spans.push(span);
@@ -70,11 +86,19 @@ export default function useSplitText(
       splitIntoLines(el, spans);
     }
 
+    if (accessibleText && originalAriaLabelRef.current === null) {
+      const accessible = document.createElement("span");
+      accessible.className = "sr-only split-accessible-text";
+      accessible.textContent = accessibleText;
+      el.insertBefore(accessible, el.firstChild);
+    }
+
     spansRef.current = spans;
   }, [ref, mode]);
 
   useEffect(() => {
     split();
+    const element = ref.current;
 
     let timeout: ReturnType<typeof setTimeout>;
     const onResize = () => {
@@ -86,8 +110,17 @@ export default function useSplitText(
     return () => {
       clearTimeout(timeout);
       window.removeEventListener("resize", onResize);
+
+      if (element && originalHTMLRef.current) {
+        element.innerHTML = originalHTMLRef.current;
+        if (originalAriaLabelRef.current === null) {
+          element.removeAttribute("aria-label");
+        } else {
+          element.setAttribute("aria-label", originalAriaLabelRef.current);
+        }
+      }
     };
-  }, [split]);
+  }, [split, ref]);
 
   return spansRef;
 }
@@ -137,10 +170,12 @@ function splitIntoLines(el: HTMLElement, spans: HTMLSpanElement[]) {
 
   // Rebuild DOM with the line structure
   el.innerHTML = "";
-  lines.forEach((lineWords) => {
-    const wrapper = document.createElement("div");
+  lines.forEach((lineWords, index) => {
+    const wrapper = document.createElement("span");
     wrapper.style.overflow = "hidden";
+    wrapper.style.display = "block";
     wrapper.className = "split-line-wrapper";
+    wrapper.setAttribute("aria-hidden", "true");
 
     const inner = document.createElement("span");
     inner.className = "split-line";
@@ -149,6 +184,9 @@ function splitIntoLines(el: HTMLElement, spans: HTMLSpanElement[]) {
 
     wrapper.appendChild(inner);
     el.appendChild(wrapper);
+    if (index < lines.length - 1) {
+      el.appendChild(document.createTextNode(" "));
+    }
     spans.push(inner);
   });
 }

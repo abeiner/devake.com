@@ -50,6 +50,34 @@ export function staggerFadeIn(
 }
 
 /**
+ * Restrained CTA entrance used across content sections.
+ * The header CTA is intentionally excluded and remains immediately visible.
+ */
+export function revealButton(
+  targets: gsap.TweenTarget,
+  tl: gsap.core.Timeline,
+  options: AnimationOptions & { position?: number | string } = {}
+) {
+  const {
+    duration = 0.6,
+    delay = 0,
+    ease = "power3.out",
+    position,
+  } = options;
+
+  gsap.set(targets, {
+    opacity: 0,
+    scale: 0.95,
+    transformOrigin: "center center",
+  });
+  tl.to(
+    targets,
+    { opacity: 1, scale: 1, duration, ease, delay },
+    position
+  );
+}
+
+/**
  * Animates a number from 0 to `endValue`, writing the formatted result
  * into the target element's textContent.
  *

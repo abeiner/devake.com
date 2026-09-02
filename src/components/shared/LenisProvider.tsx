@@ -1,14 +1,12 @@
 "use client";
 
 import useLenis from "@/hooks/useLenis";
-import useScrollSnap from "@/hooks/useScrollSnap";
 
 /**
- * Wrapper component that initializes Lenis smooth scroll and
- * GSAP-based scroll snapping site-wide.
+ * Wrapper component that initializes Lenis smooth scrolling site-wide.
  *
- * Placed inside the layout so every page benefits from smooth scrolling.
- * The hooks handle all setup and teardown.
+ * Section snapping is intentionally not used: it can move the page after
+ * the user has stopped scrolling and makes navigation feel unpredictable.
  */
 export default function LenisProvider({
   children,
@@ -16,6 +14,5 @@ export default function LenisProvider({
   children: React.ReactNode;
 }) {
   useLenis();
-  useScrollSnap();
   return <>{children}</>;
 }

@@ -24,8 +24,8 @@ export interface ScrollAnimationOptions {
  * @param options       — ScrollTrigger overrides (start, end, toggleActions, etc.)
  * @param deps          — additional dependency array values (re-runs effect when changed)
  *
- * When `prefers-reduced-motion` is active the factory is skipped and
- * a simple opacity 0 -> 1 fade is used instead.
+ * When `prefers-reduced-motion` is active the factory and ScrollTrigger are
+ * skipped so the content remains visible without any entrance animation.
  */
 export default function useScrollAnimation(
   ref: RefObject<HTMLElement | null>,
@@ -60,15 +60,8 @@ export default function useScrollAnimation(
     if (scrub !== undefined) scrollTriggerVars.scrub = scrub;
 
     if (prefersReduced) {
-      // Reduced-motion fallback: simple opacity fade, no transforms
-      gsap.set(el, { opacity: 0 });
-      const tl = gsap.timeline({ scrollTrigger: scrollTriggerVars });
-      tl.to(el, { opacity: 1, duration: 0.4, ease: "power1.out" });
-
-      return () => {
-        tl.scrollTrigger?.kill();
-        tl.kill();
-      };
+      gsap.set(el, { clearProps: "opacity,transform,clipPath" });
+      return;
     }
 
     const tl = gsap.timeline({ scrollTrigger: scrollTriggerVars });

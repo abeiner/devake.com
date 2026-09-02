@@ -1,1 +1,0 @@
-- [devake.com Deployment](project_devake_deployment.md) — Azure Static Web Apps URL, GitHub repo, deploy method for devake.com

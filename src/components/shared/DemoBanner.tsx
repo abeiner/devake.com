@@ -23,16 +23,19 @@ export default function DemoBanner() {
   }, [isDismissed]);
 
   useEffect(() => {
+    let dismissed = false;
     try {
-      const stored = sessionStorage.getItem(STORAGE_KEY);
-      if (stored !== "true") {
-        setIsDismissed(false);
-      }
+      dismissed = sessionStorage.getItem(STORAGE_KEY) === "true";
     } catch {
-      // sessionStorage unavailable, show banner
-      setIsDismissed(false);
+      // sessionStorage unavailable: show the banner for this visit.
     }
-    setIsMounted(true);
+
+    const frame = window.requestAnimationFrame(() => {
+      setIsDismissed(dismissed);
+      setIsMounted(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
@@ -75,7 +78,7 @@ export default function DemoBanner() {
         <button
           onClick={handleDismiss}
           aria-label="Dismiss demo banner"
-          className="ml-4 flex-shrink-0 p-1 text-text-dark transition-opacity duration-200 hover:opacity-60 focus-visible:outline-2 focus-visible:outline-text-dark focus-visible:outline-offset-2"
+          className="ml-4 flex min-h-6 min-w-6 flex-shrink-0 items-center justify-center p-1 text-text-dark transition-opacity duration-200 hover:opacity-60 focus-visible:outline-2 focus-visible:outline-text-dark focus-visible:outline-offset-2"
         >
           <svg
             width="14"

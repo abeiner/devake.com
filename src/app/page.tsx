@@ -4,13 +4,14 @@ import AboutSection from "@/components/about/AboutSection";
 import CapabilitiesSection from "@/components/capabilities/CapabilitiesSection";
 import WorkSection from "@/components/work/WorkSection";
 import TechnologySection from "@/components/technology/TechnologySection";
-import TeamSection from "@/components/team/TeamSection";
 import ContactSection from "@/components/contact/ContactSection";
+import ScrollLagEffect from "@/components/shared/ScrollLagEffect";
 
 export default function Home() {
   return (
     <>
-      <main id="main-content">
+      <ScrollLagEffect />
+      <main id="main-content" tabIndex={-1} className="outline-none">
         {/* 01 — Hero */}
         <HeroSection />
 
@@ -26,10 +27,7 @@ export default function Home() {
         {/* 05 — Technology */}
         <TechnologySection />
 
-        {/* 06 — Team */}
-        <TeamSection />
-
-        {/* 07 — Contact */}
+        {/* 05 — Contact */}
         <ContactSection />
       </main>
 

@@ -12,9 +12,9 @@ import { TECH_STACK } from "@/lib/constants";
 /**
  * TechnologySection — 5x2 grid of core technologies + scrolling ticker.
  *
- * - Section ID: "technology", background: #111113
+ * - Section ID: "technology", light contrast section
  * - SectionHeader "04" / "TECHNOLOGY"
- * - Heading "Our Stack" with SplitText line reveal
+ * - Heading "Methods & Delivery" with SplitText line reveal
  * - 5x2 grid (2 columns on mobile) with hover effects
  * - TechTicker below the grid
  * - Scroll animation: cells stagger-reveal
@@ -22,7 +22,7 @@ import { TECH_STACK } from "@/lib/constants";
 export default function TechnologySection() {
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLUListElement>(null);
 
   // Split heading text into lines for reveal animation
   const headingLines = useSplitText(headingRef, "lines");
@@ -67,44 +67,49 @@ export default function TechnologySection() {
   return (
     <section
       id="technology"
-      className="relative noise-overlay py-2xl md:py-3xl"
-      style={{ backgroundColor: "#111113" }}
-      aria-labelledby="technology-heading"
+      data-header-theme="light"
+      className="relative bg-bg-light py-2xl md:py-3xl"
+      aria-label="Technology"
     >
-      <div className="relative z-10 max-w-6xl mx-auto px-4 xl:px-0 w-full">
+      <div data-scroll-lag className="relative z-10 max-w-6xl mx-auto px-4 xl:px-0 w-full">
         {/* Section label */}
         <div ref={headerRef}>
-          <SectionHeader number="04" label="TECHNOLOGY" />
+          <SectionHeader
+            number="04"
+            label="TECHNOLOGY"
+            tone="light"
+          />
         </div>
 
         {/* Section heading */}
         <h2
           ref={headingRef}
           id="technology-heading"
-          className="mt-lg md:mt-xl text-[36px] sm:text-[48px] md:text-[64px] lg:text-[80px] font-medium leading-[1.05] tracking-[-2px] text-text-primary"
+          className="mt-lg md:mt-xl text-[36px] sm:text-[48px] md:text-[64px] lg:text-[80px] font-medium leading-[1.05] tracking-[-2px] text-text-dark"
         >
-          Our Stack
+          Methods &amp; Delivery
         </h2>
 
         {/* 5x2 grid (2 columns on mobile) */}
-        <div
+        <ul
           ref={gridRef}
-          className="mt-lg md:mt-xl grid grid-cols-2 md:grid-cols-5"
+          className="mt-lg md:mt-xl grid grid-cols-2 md:grid-cols-5 list-none"
+          aria-label="Core technologies and delivery formats"
         >
           {TECH_STACK.map((tech) => (
-            <div
+            <li
               key={tech.name}
-              className="tech-cell group border border-border py-[24px] px-[16px] flex items-center justify-center transition-[border-color] duration-300 ease-out hover:border-border-hover cursor-default"
+              className="tech-cell group border border-[rgba(10,10,12,0.16)] py-[24px] px-[16px] flex items-center justify-center transition-[border-color,background-color] duration-300 ease-out hover:border-accent-dark hover:bg-black/[0.035] cursor-default"
             >
-              <span className="font-mono-text font-normal text-[14px] md:text-[16px] text-text-primary/60 transition-all duration-300 ease-out group-hover:text-accent group-hover:opacity-100">
+              <span className="font-mono-text font-normal text-[14px] md:text-[16px] text-text-dark/65 transition-colors duration-300 ease-out group-hover:text-accent-dark">
                 {tech.name}
               </span>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
 
         {/* Scrolling ticker */}
-        <TechTicker />
+        <TechTicker tone="light" />
       </div>
     </section>
   );

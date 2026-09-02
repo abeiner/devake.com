@@ -4,15 +4,18 @@ import { useState, useRef, useCallback, type FormEvent } from "react";
 import gsap from "gsap";
 import useScrollAnimation from "@/hooks/useScrollAnimation";
 import { SITE_CONFIG } from "@/lib/constants";
+import CTAButton from "@/components/shared/CTAButton";
+import { revealButton } from "@/lib/animations";
 
 export default function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [brief, setBrief] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [draftOpened, setDraftOpened] = useState(false);
 
   const formRef = useRef<HTMLFormElement>(null);
   const fieldsRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
   const honeypotRef = useRef<HTMLInputElement>(null);
 
   /* Staggered reveal for form fields */
@@ -30,6 +33,11 @@ export default function ContactForm() {
     });
   });
 
+  /* Match the CTA entrance used in Work and Hero. */
+  useScrollAnimation(ctaRef, (el, tl) => {
+    revealButton(el, tl);
+  }, { start: "top 96%" });
+
   const handleSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -44,14 +52,10 @@ export default function ContactForm() {
         `Name: ${name}\nEmail: ${email}\n\nProject Brief:\n${brief}`
       );
 
-      window.open(
-        `mailto:${SITE_CONFIG.email}?subject=${subject}&body=${body}`,
-        "_blank"
-      );
-
-      setSubmitted(true);
+      setDraftOpened(true);
+      window.location.href = `mailto:${SITE_CONFIG.email}?subject=${subject}&body=${body}`;
       setTimeout(() => {
-        setSubmitted(false);
+        setDraftOpened(false);
         setName("");
         setEmail("");
         setBrief("");
@@ -65,70 +69,55 @@ export default function ContactForm() {
       ref={formRef}
       onSubmit={handleSubmit}
       className="w-full"
-      noValidate
+      aria-label="Project inquiry"
     >
-      <div ref={fieldsRef} className="flex flex-col gap-md">
+      <div ref={fieldsRef} className="flex flex-col gap-sm">
         {/* Name */}
         <div className="contact-field">
-          <label
-            htmlFor="contact-name"
-            className="sr-only"
-          >
-            Name
-          </label>
           <input
             id="contact-name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Name"
+            aria-label="Name"
             aria-required="true"
             required
             autoComplete="name"
-            className="contact-input w-full bg-transparent border-0 border-b border-b-[rgba(255,253,216,0.3)] focus:border-b-accent text-text-primary text-[18px] leading-[1.4] py-sm px-0 outline-none transition-colors duration-300 placeholder:font-mono-text placeholder:text-[14px] placeholder:text-text-primary/30 min-h-[48px]"
+            className="contact-input w-full bg-transparent border-0 border-b border-b-[rgba(255,253,216,0.4)] focus:border-b-accent text-text-primary text-[18px] leading-[1.4] py-sm px-0 outline-none transition-colors duration-300 placeholder:font-mono-text placeholder:text-[14px] placeholder:text-text-primary/50 min-h-[48px]"
             style={{ fontSize: "18px" }}
           />
         </div>
 
         {/* Email */}
         <div className="contact-field">
-          <label
-            htmlFor="contact-email"
-            className="sr-only"
-          >
-            Email
-          </label>
           <input
             id="contact-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
+            aria-label="Email"
             aria-required="true"
             required
             autoComplete="email"
-            className="contact-input w-full bg-transparent border-0 border-b border-b-[rgba(255,253,216,0.3)] focus:border-b-accent text-text-primary text-[18px] leading-[1.4] py-sm px-0 outline-none transition-colors duration-300 placeholder:font-mono-text placeholder:text-[14px] placeholder:text-text-primary/30 min-h-[48px]"
+            className="contact-input w-full bg-transparent border-0 border-b border-b-[rgba(255,253,216,0.4)] focus:border-b-accent text-text-primary text-[18px] leading-[1.4] py-sm px-0 outline-none transition-colors duration-300 placeholder:font-mono-text placeholder:text-[14px] placeholder:text-text-primary/50 min-h-[48px]"
             style={{ fontSize: "18px" }}
           />
         </div>
 
         {/* Project Brief */}
         <div className="contact-field">
-          <label
-            htmlFor="contact-brief"
-            className="sr-only"
-          >
-            Project Brief
-          </label>
           <textarea
             id="contact-brief"
             value={brief}
             onChange={(e) => setBrief(e.target.value)}
             placeholder="Project Brief"
+            aria-label="Project brief"
             aria-required="true"
             required
             rows={4}
-            className="contact-input w-full bg-transparent border-0 border-b border-b-[rgba(255,253,216,0.3)] focus:border-b-accent text-text-primary text-[18px] leading-[1.4] py-sm px-0 outline-none transition-colors duration-300 resize-none placeholder:font-mono-text placeholder:text-[14px] placeholder:text-text-primary/30 min-h-[120px]"
+            className="contact-input w-full bg-transparent border-0 border-b border-b-[rgba(255,253,216,0.4)] focus:border-b-accent text-text-primary text-[18px] leading-[1.4] py-sm px-0 outline-none transition-colors duration-300 resize-none placeholder:font-mono-text placeholder:text-[14px] placeholder:text-text-primary/50 min-h-[120px]"
             style={{ fontSize: "18px" }}
           />
         </div>
@@ -147,13 +136,14 @@ export default function ContactForm() {
         </div>
 
         {/* Submit */}
-        <div className="contact-field mt-sm">
-          <button
+        <div ref={ctaRef} className="mt-sm">
+          <CTAButton
             type="submit"
-            className="font-mono-text font-medium text-[14px] uppercase tracking-[2px] inline-block cursor-pointer text-text-dark bg-accent border-none px-8 py-4 transition-all duration-200 ease-out hover:bg-accent-hover w-full sm:w-auto"
+            variant="nav"
+            className="w-full sm:w-auto"
           >
-            {submitted ? "SENT" : "SEND MESSAGE"} +
-          </button>
+            {draftOpened ? "EMAIL DRAFT OPENED" : "OPEN EMAIL DRAFT"}
+          </CTAButton>
         </div>
       </div>
     </form>

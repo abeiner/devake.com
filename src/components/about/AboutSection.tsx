@@ -3,31 +3,22 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import SectionHeader from "@/components/shared/SectionHeader";
-import AnnotationLabel from "@/components/shared/AnnotationLabel";
-import MetricsRow from "@/components/about/MetricsRow";
+import FactsRow from "@/components/about/FactsRow";
 import useScrollAnimation from "@/hooks/useScrollAnimation";
 import useSplitText from "@/hooks/useSplitText";
-import { fadeInUp, staggerFadeIn } from "@/lib/animations";
+import { fadeInUp } from "@/lib/animations";
 
 const PRIMARY_STATEMENT =
-  "We are a geospatial software studio that turns satellite imagery, LIDAR point clouds, and spatial data into intelligent platforms for companies that see the world through data.";
+  "Devake provides geospatial software development services for companies around the world, delivering web, mobile, and desktop solutions for geospatial analysis.";
 
 const SECONDARY_CONTEXT =
-  "Based in Dubai. Serving clients globally. Engineering at the intersection of geography, machine learning, and visual computing.";
-
-const ANNOTATIONS = [
-  { text: "EPSG:4326", className: "absolute top-lg right-md" },
-  { text: "WGS 84", className: "absolute top-[40%] right-sm" },
-  { text: "GeoJSON", className: "absolute bottom-[30%] right-md" },
-  { text: "CRS:84", className: "absolute bottom-lg left-md" },
-];
+  "The team uses machine learning, computer vision, deep learning, and image analysis to enrich geospatial data with information gathered from satellite and LIDAR imagery.";
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const primaryRef = useRef<HTMLParagraphElement>(null);
   const secondaryRef = useRef<HTMLParagraphElement>(null);
-  const annotationsRef = useRef<HTMLDivElement>(null);
 
   /* Split primary statement into lines for reveal animation */
   const splitSpans = useSplitText(primaryRef, "lines");
@@ -62,31 +53,23 @@ export default function AboutSection() {
     fadeInUp(secondaryRef.current!, tl, { delay: 0.3 });
   });
 
-  /* Annotation labels: staggered fade-in */
-  useScrollAnimation(annotationsRef, (el, tl) => {
-    const labels = el.querySelectorAll("span");
-    if (!labels.length) return;
-    staggerFadeIn(labels, tl, 0.12, { delay: 0.5 });
-  });
-
   return (
     <section
       ref={sectionRef}
       id="about"
       className="relative bg-bg-primary noise-overlay py-2xl md:py-3xl overflow-hidden"
-      aria-labelledby="about-heading"
+      aria-label="About"
       style={{
         background: "radial-gradient(ellipse 80% 60% at 50% 40%, rgba(255, 56, 49, 0.02) 0%, #0A0A0C 70%)",
       }}
     >
-      <div className="relative z-10 max-w-6xl mx-auto px-4 xl:px-0">
+      <div data-scroll-lag className="relative z-10 max-w-6xl mx-auto px-4 xl:px-0">
         {/* Section header */}
         <div ref={headerRef}>
           <SectionHeader number="01" label="ABOUT" />
         </div>
 
-        {/* Visually hidden heading for accessibility */}
-        <h2 id="about-heading" className="sr-only">About</h2>
+        <h2 className="sr-only">About Devake</h2>
 
         {/* Primary statement */}
         <p
@@ -104,20 +87,10 @@ export default function AboutSection() {
           {SECONDARY_CONTEXT}
         </p>
 
-        {/* Metrics */}
-        <MetricsRow />
+        {/* Publicly confirmed delivery and research areas */}
+        <FactsRow />
       </div>
 
-      {/* Floating annotation labels */}
-      <div ref={annotationsRef} className="absolute inset-0 pointer-events-none z-10">
-        {ANNOTATIONS.map((anno) => (
-          <AnnotationLabel
-            key={anno.text}
-            text={anno.text}
-            className={anno.className}
-          />
-        ))}
-      </div>
     </section>
   );
 }

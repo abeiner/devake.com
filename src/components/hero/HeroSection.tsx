@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import PointCloud from "./PointCloud";
-import CodeBurst from "./CodeBurst";
 import CTAButton from "@/components/shared/CTAButton";
 import { usePreloader } from "@/components/preloader/PreloaderContext";
+import { revealButton } from "@/lib/animations";
 
 /**
  * Inline SVG paths for "DEVAKE." logo — 7 paths (D-E-V-A-K-E-dot).
@@ -37,36 +37,13 @@ const LOGO_PATHS = [
  */
 export default function HeroSection() {
   const logoRef = useRef<HTMLDivElement>(null);
-  const logoPathsRef = useRef<(SVGPathElement | null)[]>([]);
+  const logoVisualRef = useRef<SVGSVGElement>(null);
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
   const animationRanRef = useRef(false);
-  const sectionRef = useRef<HTMLElement>(null);
-  const burstIdRef = useRef(0);
-
-  const [burstClick, setBurstClick] = useState<{ x: number; y: number; id: number } | null>(null);
 
   const { isComplete: preloaderComplete } = usePreloader();
-
-  /** Handle clicks on hero empty space — spawn code burst */
-  const handleHeroClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    // Don't trigger on interactive elements (buttons, links, inputs)
-    const target = e.target as HTMLElement;
-    if (target.closest("a, button, input, textarea, select, [role='button']")) {
-      return;
-    }
-
-    // Get click position relative to the section
-    const rect = sectionRef.current?.getBoundingClientRect();
-    if (!rect) return;
-
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    burstIdRef.current += 1;
-    setBurstClick({ x, y, id: burstIdRef.current });
-  }, []);
 
   useEffect(() => {
     // Wait for preloader to complete before running hero animations
@@ -83,9 +60,8 @@ export default function HeroSection() {
     if (prefersReduced) {
       // Show everything immediately, no animations
       if (logoRef.current) gsap.set(logoRef.current, { opacity: 1 });
-      logoPathsRef.current.forEach((p) => {
-        if (p) gsap.set(p, { opacity: 1 });
-      });
+      if (logoVisualRef.current)
+        gsap.set(logoVisualRef.current, { y: 0, opacity: 1 });
       if (taglineRef.current) gsap.set(taglineRef.current, { opacity: 1 });
       if (ctaRef.current) gsap.set(ctaRef.current, { opacity: 1 });
       if (scrollIndicatorRef.current)
@@ -94,19 +70,17 @@ export default function HeroSection() {
     }
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.2 });
+      const tl = gsap.timeline({ delay: 0.1 });
 
-      // 1) Logo: path-by-path reveal (one per letter: D-E-V-A-K-E-dot)
-      const paths = logoPathsRef.current.filter(Boolean) as SVGPathElement[];
-      if (paths.length > 0) {
-        gsap.set(paths, { y: 40, opacity: 0 });
+      // 1) Logo: one-line masked reveal, matching the About statement.
+      if (logoVisualRef.current) {
+        gsap.set(logoVisualRef.current, { y: 40, opacity: 0 });
         gsap.set(logoRef.current, { opacity: 1 });
-        tl.to(paths, {
+        tl.to(logoVisualRef.current, {
           y: 0,
           opacity: 1,
-          duration: 0.6,
+          duration: 0.68,
           ease: "power3.out",
-          stagger: 0.05,
         });
       }
 
@@ -118,26 +92,16 @@ export default function HeroSection() {
           {
             y: 0,
             opacity: 1,
-            duration: 0.8,
+            duration: 0.72,
             ease: "power3.out",
           },
-          "-=0.1"
+          "-=0.28"
         );
       }
 
-      // 3) CTA: fade-in
+      // 3) CTA: use the same restrained scale reveal as section buttons
       if (ctaRef.current) {
-        gsap.set(ctaRef.current, { y: 10, opacity: 0 });
-        tl.to(
-          ctaRef.current,
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.6,
-            ease: "power3.out",
-          },
-          "-=0.3"
-        );
+        revealButton(ctaRef.current, tl, { position: "-=0.3" });
       }
 
       // 4) Scroll indicator: fade in, then infinite bounce
@@ -177,43 +141,35 @@ export default function HeroSection() {
 
   return (
     <section
-      ref={sectionRef}
       id="hero"
-      className="relative min-h-screen overflow-hidden noise-overlay"
+      className="relative min-h-[100svh] md:min-h-screen overflow-hidden noise-overlay"
       style={{ backgroundColor: "#0A0A0C" }}
-      aria-label="Hero"
-      onClick={handleHeroClick}
+      aria-label="Home"
     >
-      {/* Point cloud background (z-0) */}
       <PointCloud />
 
-      {/* Code burst effect layer (z-5, between point cloud and content) */}
-      <CodeBurst clickEvent={burstClick} />
-
       {/* Content overlay — lower-left quadrant positioning */}
-      <div className="relative z-10 min-h-screen flex flex-col justify-end pb-24 sm:pb-32 md:pb-40">
-        <div className="max-w-6xl mx-auto px-4 xl:px-0 w-full">
+      <div className="relative z-10 min-h-[100svh] md:min-h-screen flex flex-col justify-end pb-20 sm:pb-32 md:pb-40">
+        <div data-scroll-lag className="max-w-6xl mx-auto px-4 xl:px-0 w-full">
           {/* Logo SVG — inline paths for DEVAKE. */}
           <div
             ref={logoRef}
-            className="pointer-events-auto"
+            className="pointer-events-auto overflow-hidden"
             style={{ opacity: 0 }}
-            role="img"
-            aria-label="DEVAKE."
           >
-            <h1 className="sr-only">DEVAKE.</h1>
+            <h1 className="sr-only">
+              Devake, a geospatial software development company.
+            </h1>
             <svg
-              viewBox="240 268 360 68"
+              ref={logoVisualRef}
+              viewBox="254 268 332 68"
               xmlns="http://www.w3.org/2000/svg"
-              className="w-full max-w-[560px] md:max-w-[720px] lg:max-w-[900px] h-auto"
+              className="w-full max-w-[520px] md:max-w-[660px] lg:max-w-[830px] h-auto"
               aria-hidden="true"
             >
               {LOGO_PATHS.map((d, i) => (
                 <path
                   key={i}
-                  ref={(el) => {
-                    logoPathsRef.current[i] = el;
-                  }}
                   d={d}
                   fill="#FFFDD8"
                 />
@@ -230,9 +186,9 @@ export default function HeroSection() {
               opacity: 0,
             }}
           >
-            Geospatial Intelligence.
+            Geospatial Software Development Services.
             <br />
-            Engineered.
+            For Companies Around the World.
           </p>
 
           {/* CTA */}
@@ -241,7 +197,7 @@ export default function HeroSection() {
             className="mt-8 sm:mt-10 md:mt-12 pointer-events-auto"
             style={{ opacity: 0 }}
           >
-            <CTAButton href="#work" className="w-full sm:w-auto text-center">SEE OUR WORK</CTAButton>
+            <CTAButton href="#work-overview" className="w-full sm:w-auto text-center">SEE OUR WORK</CTAButton>
           </div>
         </div>
       </div>

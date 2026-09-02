@@ -1,13 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  type MouseEvent,
+} from "react";
 import CTAButton from "@/components/shared/CTAButton";
 import { useNav } from "@/components/shared/NavContext";
 
 function DevakeIcon({ className = "" }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 841.89 595.28"
+      viewBox="180 145 490 310"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       aria-hidden="true"
@@ -70,10 +76,26 @@ function HamburgerIcon({ className = "" }: { className?: string }) {
 export default function Navbar() {
   const { isNavOpen, openNav } = useNav();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isOnLightSection, setIsOnLightSection] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
 
   const handleScroll = useCallback(() => {
-    const threshold = window.innerHeight;
-    setIsScrolled(window.scrollY >= threshold);
+    setIsScrolled(window.scrollY > 8);
+
+    const lightSection = document.querySelector<HTMLElement>(
+      '[data-header-theme="light"]'
+    );
+    const headerBottom = headerRef.current?.getBoundingClientRect().bottom ?? 64;
+
+    if (!lightSection) {
+      setIsOnLightSection(false);
+      return;
+    }
+
+    const sectionBounds = lightSection.getBoundingClientRect();
+    setIsOnLightSection(
+      sectionBounds.top <= headerBottom && sectionBounds.bottom > headerBottom
+    );
   }, []);
 
   useEffect(() => {
@@ -89,66 +111,108 @@ export default function Navbar() {
       ticking = true;
     }
 
-    // Check initial state
-    handleScroll();
+    const initialFrame = window.requestAnimationFrame(handleScroll);
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.cancelAnimationFrame(initialFrame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, [handleScroll]);
 
+  function handleOpenNav(event: MouseEvent<HTMLButtonElement>) {
+    const icon = event.currentTarget.querySelector("svg");
+    const bounds = icon?.getBoundingClientRect();
+
+    if (bounds) {
+      document.documentElement.style.setProperty(
+        "--nav-origin-x",
+        `${bounds.left + bounds.width / 2}px`
+      );
+      document.documentElement.style.setProperty(
+        "--nav-origin-y",
+        `${bounds.top + bounds.height / 2}px`
+      );
+    }
+
+    openNav();
+  }
+
   return (
-    <header
-      className="fixed left-0 right-0 z-50 transition-all duration-500 ease-out"
-      style={{
-        top: "var(--banner-height, 0px)",
-        backgroundColor: isScrolled
-          ? "rgba(10, 10, 12, 0.7)"
-          : "transparent",
-        backdropFilter: isScrolled ? "blur(16px)" : "none",
-        WebkitBackdropFilter: isScrolled ? "blur(16px)" : "none",
-        borderBottom: isScrolled
-          ? "1px solid rgba(255, 253, 216, 0.05)"
-          : "1px solid transparent",
-      }}
-    >
-      <nav
-        className="max-w-6xl mx-auto px-4 xl:px-0 flex items-center justify-between h-[64px]"
-        aria-label="Main navigation"
+    <>
+      <header
+        ref={headerRef}
+        className="fixed left-0 right-0 z-50 overflow-hidden transition-[background-color,box-shadow,backdrop-filter] duration-500 ease-out"
+        style={{
+          top: "var(--banner-height, 0px)",
+          right: "var(--scrollbar-compensation, 0px)",
+          backgroundColor: isOnLightSection
+            ? "rgba(255, 253, 216, 0.72)"
+            : isScrolled
+              ? "rgba(10, 10, 12, 0.66)"
+              : "transparent",
+          WebkitBackdropFilter: isScrolled
+            ? "blur(14px) saturate(165%) contrast(118%)"
+            : "blur(0px)",
+          backdropFilter: isScrolled
+            ? "blur(14px) saturate(165%) contrast(118%)"
+            : "blur(0px)",
+          boxShadow: isOnLightSection
+            ? "0 14px 34px rgba(42, 39, 18, 0.12)"
+            : isScrolled
+              ? "0 14px 34px rgba(0, 0, 0, 0.24)"
+              : "none",
+        }}
       >
-        {/* Left: Devake icon */}
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }}
-          aria-label="Scroll to top"
-          className="flex items-center text-text-primary transition-colors duration-200 hover:text-accent"
+        <nav
+          className={`relative max-w-6xl mx-auto px-4 xl:px-0 flex items-center justify-between transition-[height] duration-500 ease-out ${
+            isScrolled ? "h-[58px]" : "h-[64px]"
+          }`}
+          aria-label="Primary"
         >
-          <DevakeIcon className="w-[36px] h-[36px] md:w-[40px] md:h-[40px]" />
-        </a>
+          {/* Left: Devake icon */}
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            aria-label="Scroll to top"
+            className={`flex items-center transition-colors duration-300 hover:text-accent ${
+              isOnLightSection ? "text-text-dark" : "text-text-primary"
+            }`}
+          >
+            <DevakeIcon className="w-[36px] h-[36px] md:w-[40px] md:h-[40px]" />
+          </a>
 
-        {/* Center: MENU + hamburger */}
-        <button
-          type="button"
-          onClick={openNav}
-          className="flex items-center gap-3 text-text-primary transition-colors duration-200 hover:text-accent cursor-pointer"
-          aria-label="Open navigation menu"
-          aria-expanded={isNavOpen}
-          aria-haspopup="dialog"
-        >
-          <span className="hidden md:inline font-mono-text text-[13px] font-medium uppercase tracking-[2px]">
-            MENU
-          </span>
-          <HamburgerIcon />
-        </button>
+          {/* Center: MENU + hamburger */}
+          <button
+            type="button"
+            onClick={handleOpenNav}
+            className={`absolute left-1/2 top-1/2 min-h-11 min-w-11 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-3 md:grid md:grid-cols-[56px_20px] transition-colors duration-300 hover:text-accent cursor-pointer ${
+              isOnLightSection ? "text-text-dark" : "text-text-primary"
+            }`}
+            aria-label="Open navigation menu"
+            aria-expanded={isNavOpen}
+            aria-haspopup="dialog"
+            aria-controls="nav-overlay"
+          >
+            <span className="nav-toggle-label hidden md:inline text-right">
+              MENU
+            </span>
+            <HamburgerIcon />
+          </button>
 
-        {/* Right: CTA */}
-        <CTAButton href="#contact" variant="nav" ariaLabel="LET'S TALK +">
-          <span className="hidden md:inline" aria-hidden="true">LET&apos;S TALK</span>
-          <span className="md:hidden" aria-hidden="true">TALK</span>
-        </CTAButton>
-      </nav>
-    </header>
+          {/* Right: CTA */}
+          <CTAButton href="#contact-overview" variant="nav" ariaLabel="LET'S TALK">
+            <span className="hidden md:inline" aria-hidden="true">LET&apos;S TALK</span>
+            <span className="md:hidden" aria-hidden="true">TALK</span>
+          </CTAButton>
+        </nav>
+
+      </header>
+    </>
   );
 }

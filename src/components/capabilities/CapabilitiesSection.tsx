@@ -21,7 +21,7 @@ export default function CapabilitiesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLUListElement>(null);
 
   // Split heading text into lines for reveal animation
   const headingLines = useSplitText(headingRef, "lines");
@@ -69,9 +69,9 @@ export default function CapabilitiesSection() {
       id="capabilities"
       className="relative noise-overlay py-2xl md:py-3xl"
       style={{ backgroundColor: "#111113" }}
-      aria-labelledby="capabilities-heading"
+      aria-label="Capabilities"
     >
-      <div className="relative z-10 max-w-6xl mx-auto px-4 xl:px-0 w-full">
+      <div data-scroll-lag className="relative z-10 max-w-6xl mx-auto px-4 xl:px-0 w-full">
         {/* Section label */}
         <div ref={headerRef}>
           <SectionHeader number="02" label="CAPABILITIES" />
@@ -87,9 +87,10 @@ export default function CapabilitiesSection() {
         </h2>
 
         {/* 3x2 grid (1 column on mobile) */}
-        <div
+        <ul
           ref={gridRef}
-          className="mt-lg md:mt-xl grid grid-cols-1 md:grid-cols-3"
+          className="mt-lg md:mt-xl grid grid-cols-1 md:grid-cols-3 list-none"
+          aria-label="Service areas"
         >
           {CAPABILITIES.map((cap) => (
             <CapabilityCell
@@ -98,7 +99,7 @@ export default function CapabilitiesSection() {
               description={cap.description}
             />
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

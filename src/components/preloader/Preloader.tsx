@@ -38,17 +38,29 @@ export default function Preloader() {
     ).matches;
 
     if (prefersReduced) {
-      setShouldRender(false);
-      markComplete();
-      return;
+      let cancelled = false;
+      queueMicrotask(() => {
+        if (cancelled) return;
+        setShouldRender(false);
+        markComplete();
+      });
+      return () => {
+        cancelled = true;
+      };
     }
 
     // Skip if already played this session
     try {
       if (sessionStorage.getItem(SESSION_KEY) === "true") {
-        setShouldRender(false);
-        markComplete();
-        return;
+        let cancelled = false;
+        queueMicrotask(() => {
+          if (cancelled) return;
+          setShouldRender(false);
+          markComplete();
+        });
+        return () => {
+          cancelled = true;
+        };
       }
     } catch {
       // sessionStorage may throw in some environments
@@ -64,6 +76,18 @@ export default function Preloader() {
     const container = containerRef.current;
 
     if (!overlay || !icon || !coord || !progress || !container) return;
+
+    let readinessCancelled = false;
+    const pageLoadReady =
+      document.readyState === "complete"
+        ? Promise.resolve()
+        : new Promise<void>((resolve) => {
+            window.addEventListener("load", () => resolve(), { once: true });
+          });
+    const contentReady = Promise.all([
+      pageLoadReady,
+      document.fonts?.ready ?? Promise.resolve(),
+    ]);
 
     // Get all SVG paths for stroke animation
     const paths = icon.querySelectorAll("path, polygon");
@@ -90,33 +114,27 @@ export default function Preloader() {
           } catch {
             // Ignore
           }
-          // Hide overlay
-          if (overlay) {
-            overlay.style.display = "none";
-          }
-          // Signal hero to start animations
-          markComplete();
+          setShouldRender(false);
         },
       });
 
-      // === Phase 1 (0s - 1.5s): SVG stroke draw ===
+      // === Phase 1 (0s - 0.95s): SVG stroke draw ===
       paths.forEach((path, i) => {
         const el = path as SVGGeometryElement;
         tl.to(
           el,
           {
             strokeDashoffset: 0,
-            duration: 1.2,
+            duration: 0.72,
             ease: "power2.inOut",
           },
-          i * 0.15 // stagger each path slightly
+          i * 0.1 // stagger each path slightly
         );
       });
 
-      // === Phase 2 (1s - 2.5s): Coordinate counter cycling ===
-      // Start cycling at t=1s, each coord shows for ~100ms
+      // === Phase 2 (0.35s - 1.25s): Coordinate counter cycling ===
       COORDINATE_PAIRS.forEach((coordText, i) => {
-        const startTime = 1.0 + i * 0.12;
+        const startTime = 0.35 + i * 0.08;
         const isLast = i === COORDINATE_PAIRS.length - 1;
 
         tl.call(
@@ -135,7 +153,7 @@ export default function Preloader() {
             coord,
             {
               opacity: 0.8,
-              duration: 0.3,
+              duration: 0.15,
               ease: "power1.out",
             },
             startTime
@@ -144,49 +162,67 @@ export default function Preloader() {
             coord,
             {
               opacity: 0.6,
-              duration: 0.2,
+              duration: 0.1,
             },
-            startTime + 0.3
+            startTime + 0.15
           );
         }
       });
 
-      // === Phase 3 (1.5s - 3s): Progress line grows ===
+      // === Phase 3 (0.35s - 1.25s): Progress line grows ===
       tl.fromTo(
         progress,
         { scaleX: 0 },
         {
           scaleX: 1,
-          duration: 1.5,
+          duration: 0.9,
           ease: "power1.inOut",
         },
-        1.5
+        0.35
       );
 
-      // === Phase 4 (3s - 3.5s): Icon scales up + fades, overlay dissolves ===
+      // The animation doubles as a real loading cover. If the document or
+      // fonts need longer than the visual sequence, hold at the full progress
+      // line and only start the exit once the underlying page is ready.
+      tl.addPause(1.25, () => {
+        void contentReady.then(() => {
+          if (!readinessCancelled) {
+            // Start the Hero reveal under the dissolving overlay so the
+            // preloader does not artificially delay the page's LCP.
+            markComplete();
+            tl.play();
+          }
+        });
+      });
+
+      // === Phase 4 (1.25s - 1.65s): Icon scales up + overlay dissolves ===
       tl.to(
         container,
         {
           scale: 1.15,
           opacity: 0,
-          duration: 0.5,
+          duration: 0.32,
           ease: "power2.in",
         },
-        3.0
+        1.25
       );
 
       tl.to(
         overlay,
         {
           opacity: 0,
-          duration: 0.4,
+          duration: 0.32,
           ease: "power2.inOut",
         },
-        3.1
+        1.3
       );
     });
 
-    return () => ctx.revert();
+    return () => {
+      readinessCancelled = true;
+      ctx.revert();
+      document.body.style.overflow = "";
+    };
   }, [markComplete]);
 
   if (!shouldRender) return null;

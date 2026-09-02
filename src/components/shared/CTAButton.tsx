@@ -1,14 +1,37 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 type CTAButtonProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   variant?: "primary" | "nav";
   className?: string;
   ariaLabel?: string;
 } & (
   | { href: string; onClick?: never }
   | { onClick: () => void; href?: never }
+  | { type: "submit"; href?: never; onClick?: never }
 );
+
+function ButtonContent({ children }: { children: ReactNode }) {
+  return (
+    <span className="cta-button__content">
+      <span className="cta-button__state cta-button__state--default">
+        <span className="cta-button__label">{children}</span>
+        <span className="cta-button__plus" aria-hidden="true">
+          +
+        </span>
+      </span>
+      <span
+        className="cta-button__state cta-button__state--swapped"
+        aria-hidden="true"
+      >
+        <span className="cta-button__plus">+</span>
+        <span className="cta-button__label">{children}</span>
+      </span>
+    </span>
+  );
+}
 
 export default function CTAButton({
   children,
@@ -17,32 +40,30 @@ export default function CTAButton({
   ariaLabel,
   ...props
 }: CTAButtonProps) {
-  const baseClasses =
-    "font-mono-text font-medium text-[14px] uppercase tracking-[2px] inline-block cursor-pointer";
-
-  const variantClasses =
-    variant === "primary"
-      ? "text-accent bg-transparent border border-[rgba(255,56,49,0.4)] px-8 py-4 transition-all duration-300 ease-out hover:bg-accent hover:text-text-dark"
-      : "text-text-dark bg-accent border-none px-6 py-3 transition-all duration-200 ease-out hover:bg-accent-hover";
-
-  const classes = `${baseClasses} ${variantClasses} ${className}`;
+  const classes = `cta-button cta-button--${variant} ${className}`;
+  const accessibleLabel =
+    ariaLabel ?? (typeof children === "string" ? children : undefined);
 
   if ("href" in props && props.href) {
     return (
-      <a href={props.href} className={classes} aria-label={ariaLabel}>
-        {children} <span aria-hidden="true">+</span>
+      <a
+        href={props.href}
+        className={classes}
+        aria-label={accessibleLabel}
+      >
+        <ButtonContent>{children}</ButtonContent>
       </a>
     );
   }
 
   return (
     <button
-      type="button"
+      type={"type" in props ? props.type : "button"}
       onClick={"onClick" in props ? props.onClick : undefined}
       className={classes}
-      aria-label={ariaLabel}
+      aria-label={accessibleLabel}
     >
-      {children} <span aria-hidden="true">+</span>
+      <ButtonContent>{children}</ButtonContent>
     </button>
   );
 }
