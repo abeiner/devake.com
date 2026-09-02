@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import DemoBanner from "@/components/shared/DemoBanner";
 import Navbar from "@/components/shared/Navbar";
 import NavOverlay from "@/components/shared/NavOverlay";
 import { NavProvider } from "@/components/shared/NavContext";
@@ -47,7 +46,6 @@ export default function RootLayout({
           <LenisProvider>
             <NavProvider>
               <SkipToContent />
-              <DemoBanner />
               <Navbar />
               <NavOverlay />
               {children}

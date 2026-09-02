@@ -4,8 +4,7 @@
 
 https://green-ocean-01168ac1e.6.azurestaticapps.net
 
-The deployment is public. There is no password gate; the site displays a demo
-disclaimer banner instead.
+The deployment is public. There is no password gate or demo disclaimer banner.
 
 ## GitHub Repository
 
@@ -72,6 +71,7 @@ After deployment, verify the live home page, favicon, navigation menu,
   - Corrected mobile viewport sizing, full-screen navigation, footer height,
     and mobile Contact ordering
   - Stabilized and balanced the responsive hero point cloud
+  - Removed the demo disclaimer banner for the final handoff
   - Completed the final pre-handoff regression check recorded in
     `QA_REPORT.md`
 

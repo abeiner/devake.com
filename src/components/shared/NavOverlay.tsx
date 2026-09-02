@@ -465,7 +465,6 @@ export default function NavOverlay() {
       {/* Close button — centered to match MENU button position in navbar */}
       <div
         className="relative shrink-0 px-4 xl:px-0 max-w-6xl mx-auto w-full h-[64px]"
-        style={{ marginTop: "var(--banner-height, 0px)" }}
       >
         <button
           ref={closeButtonRef}

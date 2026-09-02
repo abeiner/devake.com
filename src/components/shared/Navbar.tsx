@@ -144,9 +144,8 @@ export default function Navbar() {
     <>
       <header
         ref={headerRef}
-        className="fixed left-0 right-0 z-50 overflow-hidden transition-[background-color,box-shadow,backdrop-filter] duration-500 ease-out"
+        className="fixed top-0 left-0 right-0 z-50 overflow-hidden transition-[background-color,box-shadow,backdrop-filter] duration-500 ease-out"
         style={{
-          top: "var(--banner-height, 0px)",
           right: "var(--scrollbar-compensation, 0px)",
           backgroundColor: isOnLightSection
             ? "rgba(255, 253, 216, 0.72)"

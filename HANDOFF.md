@@ -3,7 +3,7 @@
 ## Deliverables
 
 - Source repository: <https://github.com/abeiner/devake.com>
-- Live Azure demo: <https://green-ocean-01168ac1e.6.azurestaticapps.net>
+- Live Azure site: <https://green-ocean-01168ac1e.6.azurestaticapps.net>
 - Setup and editing guide: [README.md](README.md)
 - Deployment procedure: [DEPLOYMENT.md](DEPLOYMENT.md)
 - Final verification record: [QA_REPORT.md](QA_REPORT.md)
@@ -32,9 +32,6 @@ Confirm with the business owner:
 - map destination;
 - copyright range;
 - final domain and analytics/privacy requirements.
-
-The current deployment displays a demo disclaimer. Remove it only after the
-business owner authorizes the site as an official Devake property.
 
 ## Functional Notes
 

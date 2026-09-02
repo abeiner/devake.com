@@ -1,12 +1,9 @@
 # Devake Website
 
-Responsive single-page demo website for Devake, a geospatial software
+Responsive single-page website for Devake, a geospatial software
 development company.
 
-Live demo: <https://green-ocean-01168ac1e.6.azurestaticapps.net>
-
-The deployed site is explicitly marked as a demo and is not presented as the
-official website of the original business.
+Live site: <https://green-ocean-01168ac1e.6.azurestaticapps.net>
 
 ## Technology
 
@@ -61,7 +58,6 @@ Other common edit locations:
 | Hero copy and CTA | `src/components/hero/HeroSection.tsx` |
 | About copy | `src/components/about/AboutSection.tsx` |
 | Contact form behavior | `src/components/contact/ContactForm.tsx` |
-| Demo disclaimer | `src/components/shared/DemoBanner.tsx` |
 | Footer and design credit | `src/components/shared/Footer.tsx` |
 | Colors and shared presentation | `src/app/globals.css` |
 | Favicon | `src/app/icon.svg` |
