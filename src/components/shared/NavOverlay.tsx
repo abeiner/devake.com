@@ -7,27 +7,27 @@ import { getLenis } from "@/hooks/useLenis";
 import { useNav } from "@/components/shared/NavContext";
 
 function lockPageScroll() {
-  const scrollbarWidth =
-    window.innerWidth - document.documentElement.clientWidth;
+  const root = document.documentElement;
   const body = document.body;
+  const scrollbarWidth = window.innerWidth - root.clientWidth;
 
-  // Keep the document's content box exactly the same width while the native
-  // scrollbar is hidden. Compensating only the fixed header still lets every
-  // centred section underneath the overlay jump horizontally.
   if (!body.dataset.navScrollLocked) {
     body.dataset.navScrollLocked = "true";
     body.dataset.navPreviousOverflow = body.style.overflow;
     body.dataset.navPreviousPaddingRight = body.style.paddingRight;
 
-    const currentPaddingRight =
-      Number.parseFloat(window.getComputedStyle(body).paddingRight) || 0;
-    body.style.paddingRight = `${currentPaddingRight + scrollbarWidth}px`;
+    if (scrollbarWidth > 0) {
+      const currentPaddingRight =
+        Number.parseFloat(window.getComputedStyle(body).paddingRight) || 0;
+      body.style.paddingRight = `${currentPaddingRight + scrollbarWidth}px`;
+    }
+
+    root.style.setProperty(
+      "--scrollbar-compensation",
+      `${scrollbarWidth}px`
+    );
   }
 
-  document.documentElement.style.setProperty(
-    "--scrollbar-compensation",
-    `${scrollbarWidth}px`
-  );
   getLenis()?.stop();
   body.style.overflow = "hidden";
 }
@@ -450,6 +450,9 @@ export default function NavOverlay() {
       aria-modal="true"
       aria-label="Navigation menu"
       className="nav-overlay fixed inset-0 z-[90] flex-col overflow-hidden md:overflow-y-auto md:overscroll-contain invisible pointer-events-none"
+      style={{
+        paddingRight: "var(--scrollbar-compensation, 0px)",
+      }}
       onClick={handleOverlayClick}
       aria-hidden={!isNavOpen}
       inert={!isNavOpen}
