@@ -5,47 +5,7 @@ import gsap from "gsap";
 import { NAV_SECTIONS, SITE_CONFIG } from "@/lib/constants";
 import { getLenis } from "@/hooks/useLenis";
 import { useNav } from "@/components/shared/NavContext";
-
-function lockPageScroll() {
-  const root = document.documentElement;
-  const body = document.body;
-  const scrollbarWidth = window.innerWidth - root.clientWidth;
-
-  if (!body.dataset.navScrollLocked) {
-    body.dataset.navScrollLocked = "true";
-    body.dataset.navPreviousOverflow = body.style.overflow;
-    body.dataset.navPreviousPaddingRight = body.style.paddingRight;
-
-    if (scrollbarWidth > 0) {
-      const currentPaddingRight =
-        Number.parseFloat(window.getComputedStyle(body).paddingRight) || 0;
-      body.style.paddingRight = `${currentPaddingRight + scrollbarWidth}px`;
-    }
-
-    root.style.setProperty(
-      "--scrollbar-compensation",
-      `${scrollbarWidth}px`
-    );
-  }
-
-  getLenis()?.stop();
-  body.style.overflow = "hidden";
-}
-
-function unlockPageScroll() {
-  const body = document.body;
-
-  getLenis()?.start();
-  body.style.overflow = body.dataset.navPreviousOverflow ?? "";
-  body.style.paddingRight = body.dataset.navPreviousPaddingRight ?? "";
-  delete body.dataset.navScrollLocked;
-  delete body.dataset.navPreviousOverflow;
-  delete body.dataset.navPreviousPaddingRight;
-  document.documentElement.style.setProperty(
-    "--scrollbar-compensation",
-    "0px"
-  );
-}
+import { lockPageScroll, unlockPageScroll } from "@/lib/pageScrollLock";
 
 function setBackgroundInert(isInert: boolean) {
   document
@@ -276,7 +236,7 @@ export default function NavOverlay() {
         setBackgroundInert(false);
         unlockPageScroll();
         if (previousFocusRef.current) {
-          previousFocusRef.current.focus();
+          previousFocusRef.current.focus({ preventScroll: true });
           previousFocusRef.current = null;
         }
 
@@ -335,7 +295,7 @@ export default function NavOverlay() {
   // ---------- Lock/unlock body scroll via Lenis ----------
   useLayoutEffect(() => {
     if (isNavOpen) {
-      lockPageScroll();
+      lockPageScroll(getLenis());
     }
   }, [isNavOpen]);
 

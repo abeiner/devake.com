@@ -106,6 +106,20 @@ Verified production security headers:
 
 ## Test-Suite Limitation
 
-The repository does not currently contain automated unit or end-to-end tests.
-The release gate is full lint, production build, and the browser smoke test
-documented above.
+There is no automated end-to-end test suite. The release gate is full lint,
+scroll-lock unit tests, production build, and the browser smoke test above.
+
+## Scroll-Lock Follow-up — 2026-09-03
+
+- Replaced assumed scrollbar-width padding with actual before/after layout
+  measurements, independently for the body and fixed header. This avoids
+  double compensation when a browser preserves its stable gutter.
+- Focus restoration now uses `preventScroll`.
+- Four lightweight unit cases pass: disappearing gutter, retained gutter,
+  body/fixed-element differences, and fractional widths. Each checks repeated
+  cycles, style restoration, and operation without the smooth-scroll controller.
+- Local production browser checks at 390, 1440, 2560, and 3440 CSS pixels:
+  zero horizontal position/width change for header, main, visible hero SVG,
+  hero content wrapper, capabilities heading, and footer during menu toggles.
+- The reported iMac-specific behavior was not reproduced on the available
+  browsers. The exact iMac/browser combination still needs user verification.

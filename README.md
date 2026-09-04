@@ -102,11 +102,15 @@ details.
 The final responsive, keyboard, accessibility, form, anchor, build, and live
 deployment checks are recorded in [QA_REPORT.md](QA_REPORT.md).
 
-There is currently no automated unit or end-to-end test suite. Before a
+Scroll-lock unit tests cover disappearing and retained scrollbar gutters,
+independent fixed-element compensation, and repeated lock/unlock cycles.
+They model layout responses; they do not replace real-browser testing.
+There is no end-to-end test suite. Before a
 release, run:
 
 ```bash
 npm run lint
+npm test
 npm run build
 ```
 
