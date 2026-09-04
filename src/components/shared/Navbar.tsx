@@ -213,7 +213,7 @@ export default function Navbar() {
             aria-haspopup="dialog"
             aria-controls="nav-overlay"
           >
-            <span className="nav-toggle-label hidden md:inline text-right">
+            <span className="nav-toggle-label hidden md:inline text-left">
               MENU
             </span>
             <HamburgerIcon />

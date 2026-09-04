@@ -439,7 +439,7 @@ export default function NavOverlay() {
             opacity: 0,
           }}
         >
-          <span className="nav-close-label nav-toggle-label hidden md:inline text-right">
+          <span className="nav-close-label nav-toggle-label hidden md:inline text-left">
             CLOSE
           </span>
           <span

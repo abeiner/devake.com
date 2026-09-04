@@ -123,3 +123,6 @@ scroll-lock unit tests, production build, and the browser smoke test above.
   hero content wrapper, capabilities heading, and footer during menu toggles.
 - The reported iMac-specific behavior was not reproduced on the available
   browsers. The exact iMac/browser combination still needs user verification.
+- Desktop MENU/CLOSE text is left-aligned inside its shared label column.
+  At 768, 1440, and 3440 px its text starts exactly on the content grid;
+  hamburger/close icon coordinates remain identical between states.
