@@ -126,3 +126,15 @@ scroll-lock unit tests, production build, and the browser smoke test above.
 - Desktop MENU/CLOSE text is left-aligned inside its shared label column.
   At 768, 1440, and 3440 px its text starts exactly on the content grid;
   hamburger/close icon coordinates remain identical between states.
+
+## Desktop Menu Height — 2026-09-03
+
+- Desktop section links now share the available overlay height, with equal
+  flexible gaps and contact details anchored near the bottom.
+- Verified at 2560×1440, 1920×1080, and 1440×900: all five links and contacts
+  fit, with no extra overlay scrollbar. Bottom reveal clearance is outside the
+  animated footer box to avoid transient overflow.
+- At 1024×600 the menu scrolls instead of clipping content; keyboard focus can
+  reach the email and wrap back to Close. Escape closes the overlay.
+- Mobile layout remains unchanged (checked at 390×844).
+- Production build, targeted lint, and all four scroll-lock tests passed.

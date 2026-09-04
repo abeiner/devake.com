@@ -455,10 +455,10 @@ export default function NavOverlay() {
 
       {/* Section links — main content area */}
       <nav
-        className="relative z-10 flex flex-1 items-center max-w-6xl mx-auto w-full px-4 xl:px-0 py-4 md:block md:flex-none md:pt-[clamp(32px,5vh,56px)] md:pb-0"
+        className="relative z-10 flex flex-1 items-center max-w-6xl mx-auto w-full px-4 xl:px-0 py-4 md:items-stretch md:pt-[clamp(32px,5vh,56px)] md:pb-0"
         aria-label="Page sections"
       >
-        <ul className="flex flex-col gap-[clamp(16px,3vh,32px)]">
+        <ul className="flex flex-col gap-[clamp(16px,3vh,32px)] md:flex-1 md:justify-between">
           {NAV_SECTIONS.map((section, index) => (
             <li key={section.number}>
               <a
@@ -498,10 +498,11 @@ export default function NavOverlay() {
         </ul>
       </nav>
 
-      {/* Bottom area — contact info */}
+      {/* Keep desktop bottom clearance outside the animated box so its reveal
+          does not temporarily create an extra scrollbar in the overlay. */}
       <div
         ref={bottomRef}
-        className="relative z-10 max-w-6xl mx-auto w-full shrink-0 px-4 xl:px-0 mt-0 pb-[max(24px,env(safe-area-inset-bottom))] md:mt-10 md:pb-16"
+        className="relative z-10 max-w-6xl mx-auto w-full shrink-0 px-4 xl:px-0 mt-0 pb-[max(24px,env(safe-area-inset-bottom))] md:mt-10 md:pb-0 md:mb-16"
         style={{ opacity: 0 }}
       >
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
