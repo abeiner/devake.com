@@ -95,6 +95,15 @@ Verified production security headers:
 - X-Content-Type-Options;
 - Referrer-Policy.
 
+## Header Update — 2026-09-03
+
+- Desktop/tablet header: menu on the left, centered logo, contact CTA on the right.
+- Mobile header below 768 px retains its original arrangement.
+- Verified at widths 390, 768, 1440, and 3440 px: one accessible logo link,
+  visual/DOM navigation order, no horizontal overflow, matching MENU/CLOSE
+  positions, no scrollbar-induced shift, and Escape/focus restoration.
+- Full ESLint and production build passed after the change.
+
 ## Test-Suite Limitation
 
 The repository does not currently contain automated unit or end-to-end tests.

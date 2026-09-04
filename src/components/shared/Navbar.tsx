@@ -34,6 +34,30 @@ function DevakeIcon({ className = "" }: { className?: string }) {
   );
 }
 
+function DevakeHomeLink({
+  className,
+  isOnLightSection,
+}: {
+  className: string;
+  isOnLightSection: boolean;
+}) {
+  return (
+    <a
+      href="#"
+      onClick={(event) => {
+        event.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }}
+      aria-label="Scroll to top"
+      className={`${className} items-center transition-colors duration-300 hover:text-accent ${
+        isOnLightSection ? "text-text-dark" : "text-text-primary"
+      }`}
+    >
+      <DevakeIcon className="w-[36px] h-[36px] md:w-[40px] md:h-[40px]" />
+    </a>
+  );
+}
+
 function HamburgerIcon({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -171,26 +195,17 @@ export default function Navbar() {
           }`}
           aria-label="Primary"
         >
-          {/* Left: Devake icon */}
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            aria-label="Scroll to top"
-            className={`flex items-center transition-colors duration-300 hover:text-accent ${
-              isOnLightSection ? "text-text-dark" : "text-text-primary"
-            }`}
-          >
-            <DevakeIcon className="w-[36px] h-[36px] md:w-[40px] md:h-[40px]" />
-          </a>
+          {/* Mobile: logo first. Hidden variants are excluded from Tab/VoiceOver. */}
+          <DevakeHomeLink
+            className="flex md:hidden"
+            isOnLightSection={isOnLightSection}
+          />
 
-          {/* Center: MENU + hamburger */}
+          {/* Desktop: MENU left. Mobile: keep the centered hamburger. */}
           <button
             type="button"
             onClick={handleOpenNav}
-            className={`absolute left-1/2 top-1/2 min-h-11 min-w-11 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-3 md:grid md:grid-cols-[56px_20px] transition-colors duration-300 hover:text-accent cursor-pointer ${
+            className={`absolute left-1/2 top-1/2 min-h-11 min-w-11 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-3 md:static md:translate-x-0 md:translate-y-0 md:grid md:grid-cols-[56px_20px] transition-colors duration-300 hover:text-accent cursor-pointer ${
               isOnLightSection ? "text-text-dark" : "text-text-primary"
             }`}
             aria-label="Open navigation menu"
@@ -203,6 +218,12 @@ export default function Navbar() {
             </span>
             <HamburgerIcon />
           </button>
+
+          {/* Desktop: logo centered independently of the unequal side controls. */}
+          <DevakeHomeLink
+            className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+            isOnLightSection={isOnLightSection}
+          />
 
           {/* Right: CTA */}
           <CTAButton href="#contact-overview" variant="nav" ariaLabel="LET'S TALK">

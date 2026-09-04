@@ -465,7 +465,7 @@ export default function NavOverlay() {
         <div className="nav-overlay-glass absolute inset-0" />
       </div>
 
-      {/* Close button — centered to match MENU button position in navbar */}
+      {/* Close button follows the measured MENU icon position at each breakpoint. */}
       <div
         className="relative shrink-0 px-4 xl:px-0 max-w-6xl mx-auto w-full h-[64px]"
       >
