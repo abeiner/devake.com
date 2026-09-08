@@ -190,7 +190,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={handleOpenNav}
-            className={`ml-auto grid grid-cols-[20px_56px] lg:hidden shrink-0 min-h-11 items-center gap-3 transition-colors duration-300 hover:text-accent cursor-pointer ${
+            className={`nav-menu-trigger ml-auto grid grid-cols-[20px_56px] lg:hidden shrink-0 min-h-11 items-center gap-3 transition-colors duration-300 hover:text-accent cursor-pointer ${
               isOnLightSection ? "text-text-dark" : "text-text-primary"
             }`}
             aria-label="Open navigation menu"

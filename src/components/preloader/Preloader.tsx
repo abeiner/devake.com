@@ -104,7 +104,10 @@ export default function Preloader() {
       const length = el.getTotalLength();
       el.style.fill = "none";
       el.style.stroke = "#FFFDD8";
-      el.style.strokeWidth = "2";
+      el.style.strokeWidth = "0.85";
+      el.style.vectorEffect = "non-scaling-stroke";
+      el.style.strokeLinecap = "square";
+      el.style.strokeLinejoin = "miter";
       el.style.strokeDasharray = `${length}`;
       el.style.strokeDashoffset = `${length}`;
     });
@@ -152,7 +155,7 @@ export default function Preloader() {
           tl.to(
             coord,
             {
-              opacity: 0.8,
+              opacity: 0.9,
               duration: 0.15,
               ease: "power1.out",
             },
@@ -161,7 +164,7 @@ export default function Preloader() {
           tl.to(
             coord,
             {
-              opacity: 0.6,
+              opacity: 0.74,
               duration: 0.1,
             },
             startTime + 0.15
@@ -180,6 +183,22 @@ export default function Preloader() {
         },
         0.35
       );
+
+      // Resolve the technical line drawing into the solid brand mark before
+      // the overlay exits. This keeps the drawing detail but leaves a crisp,
+      // recognizable final frame on high-density displays.
+      paths.forEach((path) => {
+        tl.to(
+          path,
+          {
+            fill: "#FFFDD8",
+            strokeOpacity: 0,
+            duration: 0.22,
+            ease: "power2.out",
+          },
+          0.98
+        );
+      });
 
       // The animation doubles as a real loading cover. If the document or
       // fonts need longer than the visual sequence, hold at the full progress
@@ -242,8 +261,9 @@ export default function Preloader() {
         <svg
           ref={iconRef}
           xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 841.89 595.28"
-          className="w-20 h-20 sm:w-24 sm:h-24"
+          viewBox="180 145 490 310"
+          className="h-auto w-[76px] sm:w-[84px]"
+          shapeRendering="geometricPrecision"
           aria-hidden="true"
         >
           <path d="M540.25,348.54h101.38v80.15h-101.38v-80.15Z" />
@@ -254,8 +274,8 @@ export default function Preloader() {
         {/* Coordinate counter */}
         <span
           ref={coordRef}
-          className="font-mono-text text-[12px] tracking-[1.5px]"
-          style={{ color: "rgba(255, 253, 216, 0.6)" }}
+          className="font-mono-text text-[13px] tracking-[1.6px]"
+          style={{ color: "rgba(255, 253, 216, 0.74)" }}
         >
           &nbsp;
         </span>
@@ -266,7 +286,7 @@ export default function Preloader() {
           className="w-48 sm:w-64"
           style={{
             height: "1px",
-            backgroundColor: "rgba(255, 253, 216, 0.3)",
+            backgroundColor: "rgba(255, 253, 216, 0.52)",
             transformOrigin: "left center",
             transform: "scaleX(0)",
           }}

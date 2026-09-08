@@ -99,6 +99,16 @@ body {
   text-transform: uppercase;
 }
 
+/* Suppress the browser's transient tap flash on the compact MENU/CLOSE
+   controls without removing the keyboard-only focus-visible outline. */
+.nav-menu-trigger,
+.nav-close-button {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
 /* Anchor the close icon to the exact viewport position of the menu burger. */
 .nav-close-button {
   position: fixed;
