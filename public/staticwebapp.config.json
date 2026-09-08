@@ -1,4 +1,16 @@
 {
+  "routes": [
+    {
+      "route": "/cookies*",
+      "redirect": "/privacy/#cookies",
+      "statusCode": 301
+    },
+    {
+      "route": "/refunds*",
+      "redirect": "/terms/#payments-and-refunds",
+      "statusCode": 301
+    }
+  ],
   "responseOverrides": {
     "404": {
       "rewrite": "/404.html"

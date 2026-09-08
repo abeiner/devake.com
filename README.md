@@ -60,7 +60,7 @@ Other common edit locations:
 | About copy | `src/components/about/AboutSection.tsx` |
 | Contact form behavior | `src/components/contact/ContactForm.tsx` |
 | Footer and design credit | `src/components/shared/Footer.tsx` |
-| Legal and accessibility pages | `src/app/privacy`, `terms`, `cookies`, `refunds`, `accessibility` |
+| Legal and accessibility pages | `src/app/privacy`, `terms`, `accessibility` |
 | Colors and shared presentation | `src/app/globals.css` |
 | Favicon | `src/app/icon.svg` |
 | Font license notices | `public/font-licenses/NOTICES.txt` |
@@ -107,8 +107,8 @@ legal source links, asset-rights notes, and owner decisions that remain open.
 ignored by Git and is regenerated for every release.
 
 Azure configuration is stored at `public/staticwebapp.config.json`. It is
-copied into the exported output and defines the navigation fallback and
-security headers.
+copied into the exported output and defines legacy policy redirects, the custom
+404 response, and security headers.
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for the release procedure and Azure resource
 details.

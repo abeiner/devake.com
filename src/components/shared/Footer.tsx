@@ -50,8 +50,6 @@ export default function Footer() {
   const policyLinks = [
     { href: "/privacy/", label: "Privacy Policy" },
     { href: "/terms/", label: "Terms & Conditions" },
-    { href: "/cookies/", label: "Cookie Policy" },
-    { href: "/refunds/", label: "Refund Policy" },
     { href: "/accessibility/", label: "Accessibility" },
   ];
   const officeAddress = [

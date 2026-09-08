@@ -11,14 +11,16 @@ type LegalPageProps = {
 };
 
 export function LegalSection({
+  id,
   title,
   children,
 }: {
+  id?: string;
   title: string;
   children: ReactNode;
 }) {
   return (
-    <section className="border-t border-text-primary/10 pt-8">
+    <section id={id} className="scroll-mt-8 border-t border-text-primary/10 pt-8">
       <h2 className="text-[26px] font-medium tracking-[-0.5px] text-text-primary md:text-[32px]">
         {title}
       </h2>

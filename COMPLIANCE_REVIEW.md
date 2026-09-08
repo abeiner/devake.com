@@ -11,8 +11,9 @@ before treating this as a final legal sign-off.
 
 ## Implemented
 
-- Added Privacy Policy, Terms & Conditions, Cookie Policy, Refund Policy, and
-  Accessibility Statement pages with unique page titles.
+- Added Privacy Policy, Terms & Conditions, and Accessibility Statement pages
+  with unique page titles. Cookie disclosures are included in Privacy, while
+  payment, cancellation, and refund information is included in Terms.
 - Added policy links and the known Devake FZE business name, office address,
   P.O. box, and email address to the public site.
 - Changed the inquiry form so the name is optional, only the email address and
@@ -54,7 +55,7 @@ No cookie-consent banner is needed for the source reviewed because the site:
 
 The site is hosted on Microsoft Azure Static Web Apps. Hosting and network
 providers can still create ordinary request/security logs, as described in the
-Privacy Policy. The Cookie Policy must be reviewed and a consent mechanism may
+Privacy Policy. Its cookie section must be reviewed and a consent mechanism may
 be needed *before* any non-essential storage, analytics, pixels, or embeds are
 added. The UK's current storage/access guidance, for example, says consent is
 required unless an exemption applies; being merely helpful or convenient is

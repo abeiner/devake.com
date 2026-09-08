@@ -164,8 +164,9 @@ scroll-lock unit tests, production build, and the browser smoke test above.
 
 ## Compliance Release — 2026-09-08
 
-- Published Privacy, Terms, Cookie, Refund, and Accessibility pages, font-license
-  notices, local-only form consent, and the documented business contact details.
+- Published Privacy, Terms, and Accessibility pages, with cookie disclosures in
+  Privacy and payment/refund information in Terms, plus font-license notices,
+  local-only form consent, and the documented business contact details.
 - Confirmed that the runtime contains no analytics, tracking pixels, cookies,
   persistent browser storage, or third-party embeds.
 - Removed the unused photograph and unsupported ownership and retention claims.
@@ -173,5 +174,5 @@ scroll-lock unit tests, production build, and the browser smoke test above.
 - Full ESLint, TypeScript production build, and all 10 lightweight regression
   tests passed.
 - Production smoke test confirmed HTTP 200 for every published page, HTTP 404
-  with the custom page for an unknown route, all five footer policy links, no
+  with the custom page for an unknown route, all three footer policy links, no
   demo warning, and the configured CSP, HSTS, frame, MIME, and referrer headers.

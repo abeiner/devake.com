@@ -62,6 +62,25 @@ export default function PrivacyPolicyPage() {
         </p>
       </LegalSection>
 
+      <LegalSection id="cookies" title="Cookies and similar technologies">
+        <p>
+          The current website does not set cookies or intentionally write to
+          local storage or session storage. It does not use analytics,
+          advertising pixels, behavioral tracking, embedded videos,
+          social-media widgets, chat widgets, or other third-party embeds.
+          Therefore, the site does not currently display a cookie-consent
+          banner.
+        </p>
+        <p>
+          Hosting and network providers may still generate ordinary request and
+          security logs as described above. External destinations such as
+          Google Maps are loaded only after you select their links and may then
+          apply their own technologies and policies. This section and the
+          consent approach must be reviewed before non-essential storage,
+          analytics, advertising, or embedded services are added.
+        </p>
+      </LegalSection>
+
       <LegalSection title="Sharing and international processing">
         <p>
           We do not sell personal information. Information may be handled by

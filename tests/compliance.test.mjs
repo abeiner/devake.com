@@ -55,10 +55,15 @@ test("contact form is local, minimized, labeled, and privacy-aware", () => {
 });
 
 test("legal and accessibility pages are present", () => {
-  for (const route of ["privacy", "terms", "cookies", "refunds", "accessibility"]) {
+  for (const route of ["privacy", "terms", "accessibility"]) {
     assert.equal(existsSync(join(projectRoot, "src/app", route, "page.tsx")), true);
   }
   assert.equal(existsSync(join(projectRoot, "src/app/not-found.tsx")), true);
+
+  const privacy = readFileSync(join(projectRoot, "src/app/privacy/page.tsx"), "utf8");
+  const terms = readFileSync(join(projectRoot, "src/app/terms/page.tsx"), "utf8");
+  assert.match(privacy, /id="cookies"/);
+  assert.match(terms, /id="payments-and-refunds"/);
 });
 
 test("Azure serves the custom not-found page with a real 404", () => {
@@ -68,6 +73,18 @@ test("Azure serves the custom not-found page with a real 404", () => {
 
   assert.equal(config.navigationFallback, undefined);
   assert.equal(config.responseOverrides?.["404"]?.rewrite, "/404.html");
+  assert.deepEqual(config.routes, [
+    {
+      route: "/cookies*",
+      redirect: "/privacy/#cookies",
+      statusCode: 301,
+    },
+    {
+      route: "/refunds*",
+      redirect: "/terms/#payments-and-refunds",
+      statusCode: 301,
+    },
+  ]);
 });
 
 test("unused public photograph is not shipped", () => {

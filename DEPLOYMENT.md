@@ -58,7 +58,8 @@ After deployment, verify the live home page, favicon, navigation menu,
 
 - 2026-09-08: Header variant 1 and compliance release
   - Published the approved desktop navigation and compact mobile menu
-  - Added Privacy, Terms, Cookie, Refund, and Accessibility pages
+  - Added Privacy, Terms, and Accessibility pages; consolidated cookie details
+    into Privacy and payment/refund details into Terms
   - Added form privacy acknowledgment and minimized the inquiry fields
   - Added self-hosted font notices and documented logo authorship
   - Removed the unused photograph, analytics/storage remnants, unsupported

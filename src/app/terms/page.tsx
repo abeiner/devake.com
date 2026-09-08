@@ -34,6 +34,21 @@ export default function TermsPage() {
         </p>
       </LegalSection>
 
+      <LegalSection id="payments-and-refunds" title="Payments, cancellations, and refunds">
+        <p>
+          This website does not sell products, accept payments, complete online
+          orders, or create a services contract. The contact form only opens an
+          email draft, so there are no website transactions to cancel or refund.
+        </p>
+        <p>
+          Pricing, deposits, billing milestones, cancellation rights,
+          acceptance, and any refund terms for custom services are governed by
+          the proposal, statement of work, order, or contract agreed for that
+          project. Nothing in these terms limits a remedy that cannot lawfully
+          be limited.
+        </p>
+      </LegalSection>
+
       <LegalSection title="Intellectual property">
         <p>
           The website design, text, software, graphics, names, and marks are
