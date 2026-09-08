@@ -479,7 +479,42 @@ textarea.contact-input:focus-visible {
 }
 
 .contact-checkbox {
-  accent-color: #FF3831;
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-grid;
+  place-content: center;
+  border: 1px solid rgba(255, 253, 216, 0.42);
+  border-radius: 1px;
+  background-color: #111113;
+  color: #FF3831;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.contact-checkbox::before {
+  content: "";
+  width: 10px;
+  height: 6px;
+  border-bottom: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+  transform: translateY(-1px) rotate(-45deg) scale(0);
+  transform-origin: center;
+  transition: transform 140ms ease;
+}
+
+.contact-checkbox:hover {
+  border-color: rgba(255, 253, 216, 0.72);
+}
+
+.contact-checkbox:checked::before {
+  transform: translateY(-1px) rotate(-45deg) scale(1);
+}
+
+.contact-checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .cta-button:focus-visible {
