@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useCallback } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { NAV_SECTIONS, SITE_CONFIG } from "@/lib/constants";
 import { getLenis } from "@/hooks/useLenis";
 import { useNav } from "@/components/shared/NavContext";
+import DevakeIcon from "@/components/shared/DevakeIcon";
 import { lockPageScroll, unlockPageScroll } from "@/lib/pageScrollLock";
 
 function setBackgroundInert(isInert: boolean) {
@@ -59,6 +62,7 @@ function getCenteredSectionOffset(target: HTMLElement) {
  */
 export default function NavOverlay() {
   const { isNavOpen, closeNav } = useNav();
+  const router = useRouter();
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -236,7 +240,11 @@ export default function NavOverlay() {
         setBackgroundInert(false);
         unlockPageScroll();
         if (previousFocusRef.current) {
-          previousFocusRef.current.focus({ preventScroll: true });
+          // The compact trigger disappears when resizing to desktop links.
+          const focusTarget = previousFocusRef.current.getClientRects().length
+            ? previousFocusRef.current
+            : document.querySelector<HTMLElement>('header a[href="/"]');
+          focusTarget?.focus({ preventScroll: true });
           previousFocusRef.current = null;
         }
 
@@ -244,13 +252,19 @@ export default function NavOverlay() {
         pendingTargetRef.current = null;
 
         if (targetId) {
+          if (window.location.pathname !== "/") {
+            router.push(`/#${targetId}`);
+            onDone?.();
+            return;
+          }
+
           // Wait until scroll locking has actually been removed. This avoids
           // racing Lenis against the closing menu animation.
           requestAnimationFrame(() => {
             const target = document.getElementById(targetId);
             if (!target) return;
 
-            const offset = getCenteredSectionOffset(target);
+            const offset = targetId === "hero" ? 0 : getCenteredSectionOffset(target);
             const lenis = getLenis();
             if (lenis) {
               lenis.scrollTo(target, { offset, duration: 1.2 });
@@ -289,7 +303,7 @@ export default function NavOverlay() {
       openTimeline.eventCallback("onReverseComplete", finishClose);
       openTimeline.timeScale(1.15).reverse();
     },
-    []
+    [router]
   );
 
   // ---------- Lock/unlock body scroll via Lenis ----------
@@ -329,6 +343,16 @@ export default function NavOverlay() {
     }
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isNavOpen, closeNav]);
+
+  // Do not leave a modal open over the desktop's already visible navigation.
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const closeOnDesktop = () => {
+      if (desktop.matches) closeNav();
+    };
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, [closeNav]);
 
   // ---------- Focus trap ----------
   useEffect(() => {
@@ -429,19 +453,25 @@ export default function NavOverlay() {
       <div
         className="relative shrink-0 px-4 xl:px-0 max-w-6xl mx-auto w-full h-[64px]"
       >
+        <Link
+          href="/#hero"
+          onClick={(event) => handleLinkClick(event, "#hero")}
+          aria-label="Devake home"
+          className="fixed left-4 z-20 flex lg:hidden min-h-11 min-w-11 items-center text-text-primary transition-colors duration-300 hover:text-accent"
+          style={{ top: "calc(var(--nav-origin-y, 32px) - 22px)" }}
+        >
+          <DevakeIcon className="w-[36px] h-[36px] md:w-[40px] md:h-[40px]" />
+        </Link>
         <button
           ref={closeButtonRef}
           type="button"
           onClick={closeNav}
-          className="nav-close-button z-20 flex min-h-11 min-w-11 items-center justify-center gap-3 md:grid md:grid-cols-[56px_20px] text-text-primary transition-colors duration-200 hover:text-accent cursor-pointer"
+          className="nav-close-button z-20 grid grid-cols-[20px_56px] min-h-11 items-center gap-3 text-text-primary transition-colors duration-200 hover:text-accent cursor-pointer"
           aria-label="Close navigation menu"
           style={{
             opacity: 0,
           }}
         >
-          <span className="nav-close-label nav-toggle-label hidden md:inline text-left">
-            CLOSE
-          </span>
           <span
             className="relative block h-5 w-5"
             aria-hidden="true"
@@ -449,6 +479,9 @@ export default function NavOverlay() {
             <span className="nav-close-line absolute left-0 top-1/2 block h-px w-5 bg-current" />
             <span className="nav-close-line absolute left-0 top-1/2 block h-px w-5 bg-current" />
             <span className="nav-close-line absolute left-0 top-1/2 block h-px w-5 bg-current" />
+          </span>
+          <span className="nav-close-label nav-toggle-label text-left">
+            CLOSE
           </span>
         </button>
       </div>
@@ -461,11 +494,11 @@ export default function NavOverlay() {
         <ul className="flex flex-col gap-[clamp(16px,3vh,32px)] md:flex-1 md:justify-between">
           {NAV_SECTIONS.map((section, index) => (
             <li key={section.number}>
-              <a
+              <Link
                 ref={(el) => {
                   linksRef.current[index] = el;
                 }}
-                href={section.href}
+                href={`/${section.href}`}
                 onClick={(e) => handleLinkClick(e, section.href)}
                 className="group flex items-center gap-4 md:gap-6 py-2 md:py-[10px] min-h-[48px] relative bg-transparent hover:bg-transparent focus-visible:bg-transparent active:bg-transparent transition-[color] duration-300 hover:text-accent text-text-primary"
                 style={{
@@ -492,7 +525,7 @@ export default function NavOverlay() {
                 <span className="text-[36px] md:text-[48px] lg:text-[64px] font-medium tracking-[-2px] leading-none">
                   {section.label}
                 </span>
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

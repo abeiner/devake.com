@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { usePreloader } from "./PreloaderContext";
 
@@ -20,18 +21,40 @@ const COORDINATE_PAIRS = [
   "25.2048°N, 055.2708°E", // Dubai (final)
 ];
 
-const SESSION_KEY = "devake-preloader-played";
+// Keep this as an in-memory presentation preference. It avoids repeating the
+// animation during client-side navigation without writing cookies or browser
+// storage.
+let preloaderHasPlayed = false;
 
 export default function Preloader() {
+  const pathname = usePathname();
   const overlayRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<SVGSVGElement>(null);
   const coordRef = useRef<HTMLSpanElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { markComplete } = usePreloader();
-  const [shouldRender, setShouldRender] = useState(true);
+  const [shouldRender, setShouldRender] = useState(pathname === "/");
 
   useEffect(() => {
+    if (pathname !== "/" || preloaderHasPlayed) {
+      // Arriving on an information page first still counts as the current app
+      // visit, so client-side navigation back home does not unexpectedly play
+      // a loading sequence.
+      if (pathname !== "/") preloaderHasPlayed = true;
+      let cancelled = false;
+      queueMicrotask(() => {
+        if (cancelled) return;
+        setShouldRender(false);
+        markComplete();
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    preloaderHasPlayed = true;
+
     // Respect prefers-reduced-motion
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -47,23 +70,6 @@ export default function Preloader() {
       return () => {
         cancelled = true;
       };
-    }
-
-    // Skip if already played this session
-    try {
-      if (sessionStorage.getItem(SESSION_KEY) === "true") {
-        let cancelled = false;
-        queueMicrotask(() => {
-          if (cancelled) return;
-          setShouldRender(false);
-          markComplete();
-        });
-        return () => {
-          cancelled = true;
-        };
-      }
-    } catch {
-      // sessionStorage may throw in some environments
     }
 
     // Lock body scroll during preloader
@@ -108,12 +114,6 @@ export default function Preloader() {
         onComplete: () => {
           // Unlock body scroll
           document.body.style.overflow = "";
-          // Mark in sessionStorage
-          try {
-            sessionStorage.setItem(SESSION_KEY, "true");
-          } catch {
-            // Ignore
-          }
           setShouldRender(false);
         },
       });
@@ -223,7 +223,7 @@ export default function Preloader() {
       ctx.revert();
       document.body.style.overflow = "";
     };
-  }, [markComplete]);
+  }, [markComplete, pathname]);
 
   if (!shouldRender) return null;
 

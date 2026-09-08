@@ -38,7 +38,7 @@ export const CAPABILITIES: Capability[] = [
   {
     title: "Geospatial Data Platform",
     description:
-      "A platform for secure storage, quick access, import, export, and analysis of geospatial data, with API integration for other systems.",
+      "A platform for storing, accessing, importing, exporting, and analyzing geospatial data, with API integration for other systems.",
   },
   {
     title: "Visualization & Annotation",
@@ -73,7 +73,7 @@ export const TECH_STACK: TechItem[] = [
  * Displayed at low opacity in a continuous loop.
  */
 export const TECH_TICKER: string[] = [
-  "Secure Geodata Storage",
+  "Geodata Storage",
   "Data Import & Export",
   "Geospatial Analysis",
   "Map Visualization",
@@ -86,13 +86,13 @@ export const TECH_TICKER: string[] = [
 ];
 
 /**
- * Publicly disclosed forestry work. No unsupported client, scope, stack,
- * format, or performance claims are added beyond the original website.
+ * Publicly disclosed forestry work. The wording deliberately avoids ranking
+ * the undisclosed client or implying results that cannot be verified here.
  */
 export const CASE_STUDY: CaseStudy = {
-  title: "Geospatial Projects for a Major US Forestry Company",
+  title: "Geospatial Projects for a US Forestry Company",
   description:
-    "Devake has completed several projects for one of the biggest forestry companies in the United States. Further client, scope, stack, and performance details have not been made public.",
+    "Devake states that it has completed several projects for a forestry company in the United States. The client identity, scope, technology stack, outcomes, and performance details have not been made public.",
   facts: [
     {
       label: "Engagement",

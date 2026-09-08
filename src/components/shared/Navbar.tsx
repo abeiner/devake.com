@@ -7,32 +7,11 @@ import {
   useRef,
   type MouseEvent,
 } from "react";
+import Link from "next/link";
 import CTAButton from "@/components/shared/CTAButton";
+import DevakeIcon from "@/components/shared/DevakeIcon";
 import { useNav } from "@/components/shared/NavContext";
-
-function DevakeIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="180 145 490 310"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <path
-        d="M540.25,348.54h101.38v80.15h-101.38v-80.15Z"
-        fill="currentColor"
-      />
-      <path
-        d="M280.41,246.95v101.38h-80.15v-101.38h80.15Z"
-        fill="currentColor"
-      />
-      <polygon
-        points="404.53 428.69 502.01 428.69 396.73 296.59 495.51 166.58 400.2 166.58 301.75 298.68 404.53 428.69"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
+import { NAV_SECTIONS } from "@/lib/constants";
 
 function DevakeHomeLink({
   className,
@@ -42,19 +21,20 @@ function DevakeHomeLink({
   isOnLightSection: boolean;
 }) {
   return (
-    <a
-      href="#"
+    <Link
+      href="/"
       onClick={(event) => {
+        if (window.location.pathname !== "/") return;
         event.preventDefault();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }}
-      aria-label="Scroll to top"
-      className={`${className} items-center transition-colors duration-300 hover:text-accent ${
+      aria-label="Devake home"
+      className={`${className} min-h-11 min-w-11 items-center transition-colors duration-300 hover:text-accent ${
         isOnLightSection ? "text-text-dark" : "text-text-primary"
       }`}
     >
       <DevakeIcon className="w-[36px] h-[36px] md:w-[40px] md:h-[40px]" />
-    </a>
+    </Link>
   );
 }
 
@@ -101,6 +81,7 @@ export default function Navbar() {
   const { isNavOpen, openNav } = useNav();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOnLightSection, setIsOnLightSection] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
   const headerRef = useRef<HTMLElement>(null);
 
   const handleScroll = useCallback(() => {
@@ -110,6 +91,11 @@ export default function Navbar() {
       '[data-header-theme="light"]'
     );
     const headerBottom = headerRef.current?.getBoundingClientRect().bottom ?? 64;
+    const currentSection = NAV_SECTIONS.find((section) => {
+      const bounds = document.querySelector(section.href)?.getBoundingClientRect();
+      return bounds && bounds.top <= headerBottom + 64 && bounds.bottom > headerBottom + 64;
+    });
+    setActiveSection(currentSection?.href ?? "");
 
     if (!lightSection) {
       setIsOnLightSection(false);
@@ -190,22 +176,21 @@ export default function Navbar() {
         }}
       >
         <nav
-          className={`relative max-w-6xl mx-auto px-4 xl:px-0 flex items-center justify-between transition-[height] duration-500 ease-out ${
+          className={`relative max-w-6xl mx-auto px-4 xl:px-0 flex items-center gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr] transition-[height] duration-500 ease-out ${
             isScrolled ? "h-[58px]" : "h-[64px]"
           }`}
           aria-label="Primary"
         >
-          {/* Mobile: logo first. Hidden variants are excluded from Tab/VoiceOver. */}
           <DevakeHomeLink
-            className="flex md:hidden"
+            className="flex shrink-0 justify-self-start"
             isOnLightSection={isOnLightSection}
           />
 
-          {/* Desktop: MENU left. Mobile: keep the centered hamburger. */}
+          {/* Compact header: logo left, menu right. Desktop links stay visible. */}
           <button
             type="button"
             onClick={handleOpenNav}
-            className={`absolute left-1/2 top-1/2 min-h-11 min-w-11 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-3 md:static md:translate-x-0 md:translate-y-0 md:grid md:grid-cols-[56px_20px] transition-colors duration-300 hover:text-accent cursor-pointer ${
+            className={`ml-auto grid grid-cols-[20px_56px] lg:hidden shrink-0 min-h-11 items-center gap-3 transition-colors duration-300 hover:text-accent cursor-pointer ${
               isOnLightSection ? "text-text-dark" : "text-text-primary"
             }`}
             aria-label="Open navigation menu"
@@ -213,23 +198,33 @@ export default function Navbar() {
             aria-haspopup="dialog"
             aria-controls="nav-overlay"
           >
-            <span className="nav-toggle-label hidden md:inline text-left">
+            <HamburgerIcon />
+            <span className="nav-toggle-label text-left">
               MENU
             </span>
-            <HamburgerIcon />
           </button>
 
-          {/* Desktop: logo centered independently of the unequal side controls. */}
-          <DevakeHomeLink
-            className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-            isOnLightSection={isOnLightSection}
-          />
+          <ul className={`hidden lg:flex items-center gap-6 xl:gap-8 ${
+            isOnLightSection ? "text-text-dark" : "text-text-primary"
+          }`}>
+            {NAV_SECTIONS.filter((section) => section.href !== "#contact").map((section) => (
+              <li key={section.href}>
+                <a
+                  href={`/${section.href}`}
+                  aria-current={activeSection === section.href ? "location" : undefined}
+                  className="font-mono-text flex min-h-11 items-center text-[13px] tracking-[1px] whitespace-nowrap transition-colors hover:text-accent aria-[current=location]:underline aria-[current=location]:underline-offset-8"
+                >
+                  {section.label}
+                </a>
+              </li>
+            ))}
+          </ul>
 
-          {/* Right: CTA */}
-          <CTAButton href="#contact-overview" variant="nav" ariaLabel="LET'S TALK">
-            <span className="hidden md:inline" aria-hidden="true">LET&apos;S TALK</span>
-            <span className="md:hidden" aria-hidden="true">TALK</span>
-          </CTAButton>
+          <div className="hidden lg:block justify-self-end">
+            <CTAButton href="/#contact-overview" variant="nav" ariaLabel="Go to the contact form">
+              LET&apos;S TALK
+            </CTAButton>
+          </div>
         </nav>
 
       </header>

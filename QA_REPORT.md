@@ -1,6 +1,8 @@
 # QA Report — devake.com
 
-**Date:** 2026-09-01
+**Initial review:** 2026-09-01
+
+**Latest production verification:** 2026-09-08
 
 **Scope:** Final pre-handoff regression check
 **Production URL:** <https://green-ocean-01168ac1e.6.azurestaticapps.net>
@@ -138,3 +140,38 @@ scroll-lock unit tests, production build, and the browser smoke test above.
   reach the email and wrap back to Close. Escape closes the overlay.
 - Mobile layout remains unchanged (checked at 390×844).
 - Production build, targeted lint, and all four scroll-lock tests passed.
+
+## Selected Header — deployed 2026-09-08
+
+- At 1024 px and above: left logo, four visible section links, right contact CTA.
+- Below 1024 px: logo on the left and labeled menu trigger on the right; contact navigation
+  remains inside the compact menu. One logo link is used at every breakpoint.
+- Current section is indicated with an underline and `aria-current="location"`.
+- Checked compact widths 320, 390, 768, 1023 and desktop widths 1024, 1440,
+  2560 for visible controls and overflow. Direct anchor navigation works.
+- Compact hamburger/close icons share the same x coordinate. Expanding to
+  desktop dismisses the modal, unlocks scrolling, and restores focus to the logo.
+- Full lint, production build, and four scroll-lock unit tests passed.
+- Approved as header variant 1 and deployed to the production Azure Static Web
+  App on 2026-09-08.
+- Mobile header alignment update: checked at 390×844 with no horizontal overflow
+  and matching hamburger/close icon positions. Desktop at 1440×900 retains its
+  visible links. Production build, TypeScript, and targeted lint passed again.
+- Compact overlay now repeats the same logo at the header's top-left position.
+  At 390×844 the logo bounds match (16, 10; 44×44). Shift+Tab from Close reaches
+  the logo; activation closes the menu and returns to the page top. The shared
+  SVG, production build, TypeScript, and targeted lint were verified.
+
+## Compliance Release — 2026-09-08
+
+- Published Privacy, Terms, Cookie, Refund, and Accessibility pages, font-license
+  notices, local-only form consent, and the documented business contact details.
+- Confirmed that the runtime contains no analytics, tracking pixels, cookies,
+  persistent browser storage, or third-party embeds.
+- Removed the unused photograph and unsupported ownership and retention claims.
+- Added a custom 404 response and removed the obsolete SPA navigation fallback.
+- Full ESLint, TypeScript production build, and all 10 lightweight regression
+  tests passed.
+- Production smoke test confirmed HTTP 200 for every published page, HTTP 404
+  with the custom page for an unknown route, all five footer policy links, no
+  demo warning, and the configured CSP, HSTS, frame, MIME, and referrer headers.

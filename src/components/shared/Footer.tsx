@@ -47,6 +47,13 @@ function FooterWordmarkShape() {
 
 export default function Footer() {
   const { address, email, social, copyright } = SITE_CONFIG;
+  const policyLinks = [
+    { href: "/privacy/", label: "Privacy Policy" },
+    { href: "/terms/", label: "Terms & Conditions" },
+    { href: "/cookies/", label: "Cookie Policy" },
+    { href: "/refunds/", label: "Refund Policy" },
+    { href: "/accessibility/", label: "Accessibility" },
+  ];
   const officeAddress = [
     address.company,
     ...address.streetLines,
@@ -288,7 +295,19 @@ export default function Footer() {
             <h3 className="font-mono-text font-medium text-[12px] uppercase tracking-[1.5px] text-text-primary/50 mb-4">
               Legal
             </h3>
-            <p className="font-mono-text font-normal text-[13px] text-text-primary/50">
+            <ul className="space-y-2">
+              {policyLinks.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    className="font-mono-text font-normal text-[13px] text-text-primary/70 underline decoration-text-primary/30 underline-offset-4 transition-colors hover:text-accent"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-5 font-mono-text font-normal text-[13px] text-text-primary/50">
               &copy; {copyright} {address.company}
             </p>
           </div>

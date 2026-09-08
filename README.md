@@ -34,6 +34,7 @@ Open <http://localhost:3000>.
 ```bash
 npm run dev      # Start the development server
 npm run lint     # Run the full ESLint configuration
+npm test         # Run scroll-lock and compliance regression tests
 npm run build    # Type-check, build, and export the static site to out/
 ```
 
@@ -59,8 +60,10 @@ Other common edit locations:
 | About copy | `src/components/about/AboutSection.tsx` |
 | Contact form behavior | `src/components/contact/ContactForm.tsx` |
 | Footer and design credit | `src/components/shared/Footer.tsx` |
+| Legal and accessibility pages | `src/app/privacy`, `terms`, `cookies`, `refunds`, `accessibility` |
 | Colors and shared presentation | `src/app/globals.css` |
 | Favicon | `src/app/icon.svg` |
+| Font license notices | `public/font-licenses/NOTICES.txt` |
 
 ## Project Structure
 
@@ -85,6 +88,19 @@ The site includes:
 - reduced-motion handling;
 - screen-reader descriptions for grouped facts and contact information.
 
+The current accessibility statement is available at `/accessibility/`.
+
+## Privacy and Legal
+
+The reviewed website has no analytics, pixels, third-party embeds, cookies, or
+persistent browser storage. Its contact form opens a draft in the visitor's
+email application rather than submitting to a server. Do not add tracking,
+embeds, a form backend, accounts, payments, or uploads without reviewing and
+updating the privacy disclosures and consent requirements first.
+
+See [COMPLIANCE_REVIEW.md](COMPLIANCE_REVIEW.md) for the technical findings,
+legal source links, asset-rights notes, and owner decisions that remain open.
+
 ## Build and Deployment
 
 `npm run build` creates a fully static export in `out/`. The directory is
@@ -99,7 +115,7 @@ details.
 
 ## Quality Assurance
 
-The final responsive, keyboard, accessibility, form, anchor, build, and live
+The responsive, keyboard, accessibility, form, anchor, build, and live
 deployment checks are recorded in [QA_REPORT.md](QA_REPORT.md).
 
 Scroll-lock unit tests cover disappearing and retained scrollbar gutters,

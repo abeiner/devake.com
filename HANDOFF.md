@@ -7,6 +7,7 @@
 - Setup and editing guide: [README.md](README.md)
 - Deployment procedure: [DEPLOYMENT.md](DEPLOYMENT.md)
 - Final verification record: [QA_REPORT.md](QA_REPORT.md)
+- Compliance review and owner actions: [COMPLIANCE_REVIEW.md](COMPLIANCE_REVIEW.md)
 
 ## Access to Transfer
 
@@ -31,15 +32,25 @@ Confirm with the business owner:
 - forestry case-study wording and disclosure level;
 - map destination;
 - copyright range;
-- final domain and analytics/privacy requirements.
+- final domain and analytics/privacy requirements;
+- the logo authorship record, font notices, and source records for the texture,
+  copy, and future media.
 
 ## Functional Notes
 
+- Logo designed by Aleksandra Beiner. Original source files and dated project
+  history are retained.
+- The site is an informational B2B company website. A business phone number is
+  intentionally not published; the public contact channel is email.
 - The site is a static Next.js export; there is no application server or
   database.
 - The contact form validates locally and opens the visitor's email client with
   a pre-filled draft.
 - The site does not store or transmit submitted form data.
+- The form displays a privacy notice acknowledgment before opening the draft.
+- The current code sets no cookies, uses no persistent browser storage, and has
+  no analytics, pixels, or third-party embeds; adding any of these requires a
+  new consent and privacy review.
 - Smooth scrolling and visual motion respect the user's reduced-motion
   preference.
 - The navigation is a modal overlay and intentionally locks page scrolling

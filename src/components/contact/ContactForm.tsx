@@ -11,12 +11,12 @@ export default function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [brief, setBrief] = useState("");
+  const [privacyAcknowledged, setPrivacyAcknowledged] = useState(false);
   const [draftOpened, setDraftOpened] = useState(false);
 
   const formRef = useRef<HTMLFormElement>(null);
   const fieldsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const honeypotRef = useRef<HTMLInputElement>(null);
 
   /* Staggered reveal for form fields */
   useScrollAnimation(fieldsRef, (el, tl) => {
@@ -42,9 +42,6 @@ export default function ContactForm() {
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      /* Honeypot check: if filled, silently bail */
-      if (honeypotRef.current?.value) return;
-
       const subject = encodeURIComponent(
         `Project Inquiry from ${name || "Website Visitor"}`
       );
@@ -59,6 +56,7 @@ export default function ContactForm() {
         setName("");
         setEmail("");
         setBrief("");
+        setPrivacyAcknowledged(false);
       }, 3000);
     },
     [name, email, brief]
@@ -69,70 +67,107 @@ export default function ContactForm() {
       ref={formRef}
       onSubmit={handleSubmit}
       className="w-full"
-      aria-label="Project inquiry"
+      aria-label="Contact form"
+      aria-describedby="contact-form-note"
     >
       <div ref={fieldsRef} className="flex flex-col gap-sm">
+        <p
+          id="contact-form-note"
+          className="contact-field font-mono-text text-[13px] leading-relaxed text-text-primary/70"
+        >
+          Required fields are marked. This form opens your email app; this
+          website does not send or store your message. Please do not include
+          sensitive personal information.
+        </p>
+
         {/* Name */}
         <div className="contact-field">
+          <label
+            htmlFor="contact-name"
+            className="block font-mono-text text-[13px] text-text-primary/70"
+          >
+            Name <span className="text-text-primary/50">(optional)</span>
+          </label>
           <input
             id="contact-name"
+            name="name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Name"
-            aria-label="Name"
-            aria-required="true"
-            required
             autoComplete="name"
-            className="contact-input w-full bg-transparent border-0 border-b border-b-[rgba(255,253,216,0.4)] focus:border-b-accent text-text-primary text-[18px] leading-[1.4] py-sm px-0 outline-none transition-colors duration-300 placeholder:font-mono-text placeholder:text-[14px] placeholder:text-text-primary/50 min-h-[48px]"
+            maxLength={100}
+            className="contact-input w-full bg-transparent border-0 border-b border-b-[rgba(255,253,216,0.4)] focus:border-b-accent text-text-primary text-[18px] leading-[1.4] py-xs px-0 outline-none transition-colors duration-300 min-h-[48px]"
             style={{ fontSize: "18px" }}
           />
         </div>
 
         {/* Email */}
         <div className="contact-field">
+          <label
+            htmlFor="contact-email"
+            className="block font-mono-text text-[13px] text-text-primary/70"
+          >
+            Email address <span aria-hidden="true">*</span>
+          </label>
           <input
             id="contact-email"
+            name="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            aria-label="Email"
-            aria-required="true"
             required
             autoComplete="email"
-            className="contact-input w-full bg-transparent border-0 border-b border-b-[rgba(255,253,216,0.4)] focus:border-b-accent text-text-primary text-[18px] leading-[1.4] py-sm px-0 outline-none transition-colors duration-300 placeholder:font-mono-text placeholder:text-[14px] placeholder:text-text-primary/50 min-h-[48px]"
+            maxLength={254}
+            className="contact-input w-full bg-transparent border-0 border-b border-b-[rgba(255,253,216,0.4)] focus:border-b-accent text-text-primary text-[18px] leading-[1.4] py-xs px-0 outline-none transition-colors duration-300 min-h-[48px]"
             style={{ fontSize: "18px" }}
           />
         </div>
 
         {/* Project Brief */}
         <div className="contact-field">
+          <label
+            htmlFor="contact-brief"
+            className="block font-mono-text text-[13px] text-text-primary/70"
+          >
+            Project brief <span aria-hidden="true">*</span>
+          </label>
           <textarea
             id="contact-brief"
+            name="project-brief"
             value={brief}
             onChange={(e) => setBrief(e.target.value)}
-            placeholder="Project Brief"
-            aria-label="Project brief"
-            aria-required="true"
             required
             rows={4}
-            className="contact-input w-full bg-transparent border-0 border-b border-b-[rgba(255,253,216,0.4)] focus:border-b-accent text-text-primary text-[18px] leading-[1.4] py-sm px-0 outline-none transition-colors duration-300 resize-none placeholder:font-mono-text placeholder:text-[14px] placeholder:text-text-primary/50 min-h-[120px]"
+            maxLength={4000}
+            className="contact-input w-full bg-transparent border-0 border-b border-b-[rgba(255,253,216,0.4)] focus:border-b-accent text-text-primary text-[18px] leading-[1.4] py-xs px-0 outline-none transition-colors duration-300 resize-y min-h-[120px]"
             style={{ fontSize: "18px" }}
           />
         </div>
 
-        {/* Honeypot field — hidden from users, traps bots */}
-        <div className="absolute -left-[9999px]" aria-hidden="true">
-          <label htmlFor="contact-website">Website</label>
+        <div className="contact-field flex items-start gap-3 pt-xs">
           <input
-            id="contact-website"
-            ref={honeypotRef}
-            type="text"
-            name="website"
-            tabIndex={-1}
-            autoComplete="off"
+            id="contact-privacy"
+            name="privacy-acknowledgment"
+            type="checkbox"
+            checked={privacyAcknowledged}
+            onChange={(event) => setPrivacyAcknowledged(event.target.checked)}
+            required
+            aria-describedby="contact-privacy-note contact-privacy-link"
+            className="contact-checkbox mt-1 h-5 w-5 shrink-0 cursor-pointer"
           />
+          <div className="font-mono-text text-[13px] leading-relaxed text-text-primary/70">
+            <label id="contact-privacy-note" htmlFor="contact-privacy">
+              I have read the Privacy Policy and understand that Devake will
+              use my details to respond to this inquiry.
+            </label>{" "}
+            <a
+              id="contact-privacy-link"
+              href="/privacy/"
+              className="text-text-primary underline decoration-text-primary/50 underline-offset-4 transition-colors hover:text-accent"
+            >
+              Read the Privacy Policy.
+            </a>
+          </div>
         </div>
 
         {/* Submit */}
@@ -141,9 +176,19 @@ export default function ContactForm() {
             type="submit"
             variant="nav"
             className="w-full sm:w-auto"
+            ariaLabel="Open an email draft to contact Devake"
           >
             {draftOpened ? "EMAIL DRAFT OPENED" : "OPEN EMAIL DRAFT"}
           </CTAButton>
+          {draftOpened && (
+            <p
+              role="status"
+              className="mt-3 font-mono-text text-[13px] text-text-primary/70"
+            >
+              Your email app should now contain a new draft. The website has
+              not sent the message.
+            </p>
+          )}
         </div>
       </div>
     </form>

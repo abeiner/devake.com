@@ -56,6 +56,19 @@ After deployment, verify the live home page, favicon, navigation menu,
 
 ## Deployment Log
 
+- 2026-09-08: Header variant 1 and compliance release
+  - Published the approved desktop navigation and compact mobile menu
+  - Added Privacy, Terms, Cookie, Refund, and Accessibility pages
+  - Added form privacy acknowledgment and minimized the inquiry fields
+  - Added self-hosted font notices and documented logo authorship
+  - Removed the unused photograph, analytics/storage remnants, unsupported
+    claims, and fixed retention promises
+  - Replaced the obsolete SPA fallback with a custom HTTP 404 response
+  - Passed ESLint, the production build, 10 regression tests, and production
+    route/header smoke checks
+  - Deployed `out/` to the existing `devake-com` production environment with
+    SWA CLI 2.0.10
+
 - 2026-09-01: Accessibility and production-readiness release
   - Updated to Next.js 16.3.3
   - Removed the password gate and enabled public indexing
