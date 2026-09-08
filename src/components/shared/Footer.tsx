@@ -300,7 +300,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    className="font-mono-text font-normal text-[13px] text-text-primary/70 underline decoration-text-primary/30 underline-offset-4 transition-colors hover:text-accent"
+                    className="font-mono-text font-normal text-[13px] text-text-primary/70 no-underline underline-offset-4 transition-colors duration-200 hover:text-accent hover:underline focus-visible:text-accent focus-visible:underline"
                   >
                     {link.label}
                   </a>
