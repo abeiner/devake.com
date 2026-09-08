@@ -49,7 +49,7 @@ export default function LegalPage({
         <article className="mx-auto max-w-[880px]">
           <Link
             href="/"
-            className="inline-flex min-h-11 items-center font-mono-text text-[13px] uppercase tracking-[1.5px] text-text-primary/70 underline decoration-text-primary/30 underline-offset-4 transition-colors hover:text-accent"
+            className="inline-flex min-h-11 items-center font-mono-text text-[13px] uppercase tracking-[1.5px] text-text-primary/70 underline decoration-text-primary/30 underline-offset-4 transition-colors duration-200 hover:text-accent hover:decoration-accent focus-visible:text-accent focus-visible:decoration-accent"
           >
             Back to Devake
           </Link>
